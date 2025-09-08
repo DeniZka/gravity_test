@@ -67,7 +67,7 @@ metadata/_edit_lock_ = true
 polygon = PackedVector2Array(-60.190475, -59.428574, -52.190475, -64, 52.571426, -64, 60.190475, -59.047623, 64.000015, -51.428574, 64.000015, 52.952377, 59.047623, 60.190475, 52.952377, 64, -52.190475, 64, -59.428574, 59.809525, -64, 52.190475, -64, -52.190475)
 
 [node name="Planet" parent="." instance=ExtResource("2_3253y")]
-position = Vector2(-48, 178)
+position = Vector2(-48, 351)
 
 [node name="Moon" type="RigidBody2D" parent="Planet"]
 position = Vector2(201, -248)
@@ -126,7 +126,7 @@ metadata/_edit_lock_ = true
 polygon = PackedVector2Array(-60.190475, -59.428574, -52.190475, -64, 52.571426, -64, 60.190475, -59.047623, 64.000015, -51.428574, 64.000015, 52.952377, 59.047623, 60.190475, 52.952377, 64, -52.190475, 64, -59.428574, 59.809525, -64, 52.190475, -64, -52.190475)
 
 [node name="Place3" type="Sprite2D" parent="."]
-position = Vector2(68.00006, 741.00006)
+position = Vector2(584.99994, 902)
 rotation = -2.115643
 scale = Vector2(2.625, 2.625)
 texture = ExtResource("1_ulcgi")
@@ -174,7 +174,8 @@ metadata/_edit_lock_ = true
 polygon = PackedVector2Array(-60.190475, -59.428574, -52.190475, -64, 52.571426, -64, 60.190475, -59.047623, 64.000015, -51.428574, 64.000015, 52.952377, 59.047623, 60.190475, 52.952377, 64, -52.190475, 64, -59.428574, 59.809525, -64, 52.190475, -64, -52.190475)
 
 [node name="Actor" parent="." instance=ExtResource("4_u3cyc")]
-position = Vector2(314, 143.00002)
+position = Vector2(-56, 106)
+max_contacts_reported = 3
 
 [node name="Camera2D2" type="Camera2D" parent="Actor"]
 scale = Vector2(1.0000001, 1.0000001)

@@ -11,6 +11,9 @@ var up_force: Vector2 = Vector2.ZERO
 var gravity_force = 40
 var applied_force: Vector2 = Vector2(0,0)
 
+const CENTRAL = 0
+const OUTER = 1
+
 const MAX_SHAPE_CAST_MISS_TIME = 2
 var shape_cast_found_times = 0
 var shape_cast_not_foun_times = 0 #количество раз когда каст промахнулся
@@ -20,51 +23,109 @@ var shape_cast_increment: float = 1.0
 @onready var gravity_vector_rotation = 0
 
 @onready var picker: Line2D = $Picker
-var last_collider: RigidBody2D = null
+var last_collider: CollisionObject2D = null
+var actual_collider: CollisionObject2D = null
+var pre_position: Vector2 = Vector2.ZERO
+var pre_picker_outer: Vector2 = Vector2.ZERO
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	pre_position = global_position
+	picker.points[OUTER] = to_local(global_position)
 	pass # Replace with function body.
 
 
-func add_rays_length():
-	for child in $Area2D.get_children():
-		ray = (child as CollisionShape2D).shape
-		ray.length += ray_increment
-
-func _process(delta: float) -> void:
-	add_rays_length()
-	
 func size_shape_cast():
 	(shape_cast.shape as CircleShape2D).radius += shape_cast_increment
 	
 func angle_to_angle(from, to):
 	return fposmod(to-from + PI, PI*2) - PI
+	
+func get_picker_global() -> Vector2:
+	return picker.to_global(picker.points[OUTER])
+	
+func set_picker_global(point: Vector2):
+	picker.points[OUTER] = picker.to_local(point)
+	
+	
+func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
+	#print("AFTER: ", global_position, get_picker_global())
+	var delta_move = global_position - pre_position
+	var delta_planet_point_move = get_picker_global() - pre_picker_outer
+	#var v = delta_move - delta_planet_point_move
+	$"../RayCast2D".position = global_position                         
+	$"../RayCast2D".target_position = delta_planet_point_move * 1000 #v * 1000
+	#print(v)
+	#if on fly little compensation
+	if get_contact_count() == 0                       :
+		global_position += delta_planet_point_move
+	#print(delta_move)
+	#print(delta_planet_point_move)
+	#global_position += v
+	
+	#after _physics process
+	if actual_collider and actual_collider == last_collider:
+		#TODO: skip if STATIC
+		#print("Hello")
+		var actual_picker_outer = get_picker_global()
+		if actual_picker_outer != pre_picker_outer:
+			var dv = actual_picker_outer - pre_picker_outer
+			
+			#global_position += dv
+		#pre_picker_outer = actual_picker_outer
+	else:
+		#pre_picker_outer = global_position
+		pass
 		
+	set_picker_global(global_position)
+	pre_position = global_position
+		
+		
+	#if shape_cast.is_colliding():
+		#print("COLLIDING")
+		#var collider = $ShapeCast2D.get_collider(0)
+		#if collider and last_collider == collider:
+			#var dv = picker.to_global(picker.points[OUTER]) - global_position
+			#print(dv)
+			#global_position += dv
+		#
+	#print("IF: ", picker.to_global(picker.points[OUTER]), " - ", global_position)
+	   	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
+	#print("BEFORE: ", global_position, " ", get_picker_global())
 	apply_central_force(forward_force + backward_force + up_force + Vector2.DOWN.rotated(gravity_vector_rotation) * gravity_force)
+	pre_picker_outer = get_picker_global()
+
 	#angle correction
 	var dang = angle_to_angle(rotation, gravity_vector_rotation)
-	if abs(dang) > 0.2: #11.4 deg lesser just use physics
+	if abs(dang) > 0.01: #11.4 deg lesser just use physics
 		angular_velocity = dang
+		
 
-	
+	last_collider = actual_collider
 	if shape_cast.is_colliding():
+		#print("COLLIDING!!!")
 		#сброс промахов
 		shape_cast_not_foun_times = 0
 		#
 		var coll_cnt = $ShapeCast2D.get_collision_count()
 		
-		var collider = $ShapeCast2D.get_collider(0)
+		actual_collider = $ShapeCast2D.get_collider(0)
 
-		if last_collider == collider:
+		if last_collider == actual_collider:
 			#TODO:
-			collider
+			#print("PP: ", picker.to_global(picker.points[OUTER]), " - ", global_position)
+			#picker.points[OUTER] = picker.to_local(global_position)
+			pass
 		else:
-			picker.points[1] = Vector2(10.0)
-			picker.reparent(self)
+			#print("reparent")
+			var global_outer = get_picker_global()
+			picker.reparent(actual_collider, false)
+			set_picker_global(global_outer)
+			
+			#picker.points[CENTRAL] = Vector2(10, 0)
+			#picker.points[OUTER] = picker.to_local(global_position)
 			last_collider = null
-		last_collider = collider
 			
 			
 			
@@ -119,53 +180,8 @@ func _input(event: InputEvent) -> void:
 		backward_force = Vector2.ZERO
 		
 	if event.is_action_pressed("force"):
-		up_force = Vector2.UP.rotated(gravity_vector_rotation) * 50
+		up_force = Vector2.UP.rotated(gravity_vector_rotation) * 100
 	if event.is_action_released("force"):
 		up_force = Vector2.ZERO
 	
 	
-
-func _on_area_2d_body_entered(body: Node2D) -> void:
-	first_encounter = true
-	print(body)
-	
-func _on_area_2d_body_exited(body: Node2D) -> void:
-	#ray_increment = 1
-	#if ray_pair.size() == 1:
-		#var a = ray_pair.pop_front()
-		#if a == 0:
-			#angular_velocity = 0
-		#if a == 1:
-			#angular_velocity = .5
-		#if a == 7:
-			#angular_velocity = -.5
-	#if ray_pair.size() == 2:
-		#var a = ray_pair.pop_front()
-		#var b = ray_pair.pop_front()
-		#if a == 1 or b == 1:
-			#angular_velocity = .5
-		#if a == 7 or b == 7:
-			#angular_velocity = -.5
-			##rotation_degrees += 2
-			##print(rotation_degrees)
-		#
-	#ray_pair.clear()
-	pass # Replace with function body.
-
-
-func _on_area_2d_body_shape_entered(body_rid: RID, body: Node2D, body_shape_index: int, local_shape_index: int) -> void:
-	#print(local_shape_index, " - ", body_shape_index)
-	ray_increment = -1
-	#ray_pair.push_back(($Area2D.get_child(local_shape_index) as CollisionShape2D).rotation_degrees)
-	ray_pair.push_back(local_shape_index)
-	#if first_encounter:
-		#first_encounter = false
-		#if local_shape_index == 1:
-			#print("rotate")
-			#rotation_degrees += 22.5
-	#pass # Replace with function body.
-
-
-func _on_area_2d_body_shape_exited(body_rid: RID, body: Node2D, body_shape_index: int, local_shape_index: int) -> void:
-	
-	pass # Replace with function body.
