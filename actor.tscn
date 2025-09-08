@@ -1,0 +1,96 @@
+[gd_scene load_steps=7 format=3 uid="uid://dsjj2m64mfrhp"]
+
+[ext_resource type="Script" uid="uid://klyy2xpn5643" path="res://Unit.gd" id="1_oka2p"]
+[ext_resource type="Texture2D" uid="uid://cj6i6v7ep4mua" path="res://icon.svg" id="2_epby1"]
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_nxogm"]
+friction = 0.3
+
+[sub_resource type="SeparationRayShape2D" id="SeparationRayShape2D_nxogm"]
+length = 68.76
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nxogm"]
+radius = 3.45
+height = 15.991821
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_3253y"]
+radius = 20.0
+
+[node name="Actor" type="RigidBody2D"]
+rotation = -0.92327917
+scale = Vector2(0.99999994, 0.99999994)
+physics_material_override = SubResource("PhysicsMaterial_nxogm")
+script = ExtResource("1_oka2p")
+
+[node name="Area2D" type="Area2D" parent="."]
+visible = false
+scale = Vector2(1.0000002, 1.0000002)
+
+[node name="0" type="CollisionShape2D" parent="Area2D"]
+scale = Vector2(0.9999998, 0.9999998)
+shape = SubResource("SeparationRayShape2D_nxogm")
+
+[node name="1" type="CollisionShape2D" parent="Area2D"]
+rotation = 0.7853982
+scale = Vector2(0.9999998, 0.9999998)
+shape = SubResource("SeparationRayShape2D_nxogm")
+
+[node name="2" type="CollisionShape2D" parent="Area2D"]
+rotation = 1.5707964
+scale = Vector2(0.9999998, 0.9999998)
+shape = SubResource("SeparationRayShape2D_nxogm")
+
+[node name="3" type="CollisionShape2D" parent="Area2D"]
+rotation = 2.3561945
+scale = Vector2(0.9999998, 0.9999998)
+shape = SubResource("SeparationRayShape2D_nxogm")
+
+[node name="4" type="CollisionShape2D" parent="Area2D"]
+rotation = 3.1415927
+scale = Vector2(0.9999998, 0.9999998)
+shape = SubResource("SeparationRayShape2D_nxogm")
+
+[node name="5" type="CollisionShape2D" parent="Area2D"]
+rotation = -2.3561945
+scale = Vector2(0.9999998, 0.9999998)
+shape = SubResource("SeparationRayShape2D_nxogm")
+
+[node name="6" type="CollisionShape2D" parent="Area2D"]
+rotation = -1.5707964
+scale = Vector2(0.9999998, 0.9999998)
+shape = SubResource("SeparationRayShape2D_nxogm")
+
+[node name="7" type="CollisionShape2D" parent="Area2D"]
+rotation = -0.7853982
+scale = Vector2(0.9999998, 0.9999998)
+shape = SubResource("SeparationRayShape2D_nxogm")
+
+[node name="Unit" type="Sprite2D" parent="."]
+position = Vector2(0, -14.475)
+scale = Vector2(0.13000001, 0.28500003)
+texture = ExtResource("2_epby1")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+rotation = 1.5707964
+scale = Vector2(1.0000004, 1.0000001)
+shape = SubResource("CapsuleShape2D_nxogm")
+
+[node name="ContactRay" type="RayCast2D" parent="."]
+visible = false
+scale = Vector2(1.0000002, 1.0000002)
+target_position = Vector2(0, 21.005)
+
+[node name="ShapeCast2D" type="ShapeCast2D" parent="."]
+modulate = Color(18.892157, 18.892157, 18.892157, 0.03137255)
+shape = SubResource("CircleShape2D_3253y")
+target_position = Vector2(0, 0)
+
+[node name="Picker" type="Line2D" parent="."]
+z_index = 1
+points = PackedVector2Array(0, 0, 10, 0)
+width = 1.0
+
+[connection signal="body_entered" from="Area2D" to="." method="_on_area_2d_body_entered"]
+[connection signal="body_exited" from="Area2D" to="." method="_on_area_2d_body_exited"]
+[connection signal="body_shape_entered" from="Area2D" to="." method="_on_area_2d_body_shape_entered"]
+[connection signal="body_shape_exited" from="Area2D" to="." method="_on_area_2d_body_shape_exited"]

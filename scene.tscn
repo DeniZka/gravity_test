@@ -1,7 +1,9 @@
-[gd_scene load_steps=10 format=3 uid="uid://dkrqw355dj5dq"]
+[gd_scene load_steps=9 format=3 uid="uid://dkrqw355dj5dq"]
 
 [ext_resource type="Texture2D" uid="uid://cj6i6v7ep4mua" path="res://icon.svg" id="1_ulcgi"]
-[ext_resource type="Script" uid="uid://klyy2xpn5643" path="res://Unit.gd" id="2_nxogm"]
+[ext_resource type="PackedScene" uid="uid://dtp43fn7aofrb" path="res://planet.tscn" id="2_3253y"]
+[ext_resource type="Script" uid="uid://dve55gxvicm7k" path="res://moon.gd" id="3_u3cyc"]
+[ext_resource type="PackedScene" uid="uid://dsjj2m64mfrhp" path="res://actor.tscn" id="4_u3cyc"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nxogm"]
 radius = 18.317427
@@ -12,17 +14,8 @@ size = Vector2(114.285706, 16.437622)
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_u3cyc"]
 size = Vector2(15.238092, 116.95238)
 
-[sub_resource type="ConvexPolygonShape2D" id="ConvexPolygonShape2D_ulcgi"]
-points = PackedVector2Array(-59.42858, -59.809525, -52.19049, -64, 52.57141, -64, 59.42856, -59.42857, 63.999985, -51.428574, 63.999985, 52.190475, 58.666656, 60.190475, 52.952377, 64, -52.19049, 64, -58.66668, 60.190475, -64.000015, 52.190475, -64.000015, -52.190475)
-
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ulcgi"]
-size = Vector2(16, 36)
-
-[sub_resource type="SeparationRayShape2D" id="SeparationRayShape2D_nxogm"]
-length = 68.76
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_3253y"]
-radius = 19.5
+[sub_resource type="CircleShape2D" id="CircleShape2D_u3cyc"]
+radius = 39.26
 
 [node name="Node2D" type="Node2D"]
 
@@ -70,88 +63,126 @@ shape = SubResource("RectangleShape2D_u3cyc")
 [node name="StaticBody2D" type="StaticBody2D" parent="Place"]
 metadata/_edit_lock_ = true
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Place/StaticBody2D"]
-shape = SubResource("ConvexPolygonShape2D_ulcgi")
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Place/StaticBody2D"]
+polygon = PackedVector2Array(-60.190475, -59.428574, -52.190475, -64, 52.571426, -64, 60.190475, -59.047623, 64.000015, -51.428574, 64.000015, 52.952377, 59.047623, 60.190475, 52.952377, 64, -52.190475, 64, -59.428574, 59.809525, -64, 52.190475, -64, -52.190475)
 
-[node name="RigidBody2D" type="RigidBody2D" parent="."]
-position = Vector2(354, 124.000015)
-rotation = -0.6440265
-scale = Vector2(0.99999994, 0.99999994)
-script = ExtResource("2_nxogm")
+[node name="Planet" parent="." instance=ExtResource("2_3253y")]
+position = Vector2(-48, 178)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D"]
-position = Vector2(-6.1035156e-05, 0)
-scale = Vector2(1.0000004, 1.0000001)
-shape = SubResource("RectangleShape2D_ulcgi")
-metadata/_edit_lock_ = true
+[node name="Moon" type="RigidBody2D" parent="Planet"]
+position = Vector2(201, -248)
+can_sleep = false
+script = ExtResource("3_u3cyc")
 
-[node name="Area2D" type="Area2D" parent="RigidBody2D"]
-visible = false
-scale = Vector2(1.0000002, 1.0000002)
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Planet/Moon"]
+shape = SubResource("CircleShape2D_u3cyc")
 
-[node name="0" type="CollisionShape2D" parent="RigidBody2D/Area2D"]
-scale = Vector2(0.9999998, 0.9999998)
-shape = SubResource("SeparationRayShape2D_nxogm")
-
-[node name="1" type="CollisionShape2D" parent="RigidBody2D/Area2D"]
-rotation = 0.7853982
-scale = Vector2(0.9999998, 0.9999998)
-shape = SubResource("SeparationRayShape2D_nxogm")
-
-[node name="2" type="CollisionShape2D" parent="RigidBody2D/Area2D"]
-rotation = 1.5707964
-scale = Vector2(0.9999998, 0.9999998)
-shape = SubResource("SeparationRayShape2D_nxogm")
-
-[node name="3" type="CollisionShape2D" parent="RigidBody2D/Area2D"]
-rotation = 2.3561945
-scale = Vector2(0.9999998, 0.9999998)
-shape = SubResource("SeparationRayShape2D_nxogm")
-
-[node name="4" type="CollisionShape2D" parent="RigidBody2D/Area2D"]
-rotation = 3.1415927
-scale = Vector2(0.9999998, 0.9999998)
-shape = SubResource("SeparationRayShape2D_nxogm")
-
-[node name="5" type="CollisionShape2D" parent="RigidBody2D/Area2D"]
-rotation = -2.3561945
-scale = Vector2(0.9999998, 0.9999998)
-shape = SubResource("SeparationRayShape2D_nxogm")
-
-[node name="6" type="CollisionShape2D" parent="RigidBody2D/Area2D"]
-rotation = -1.5707964
-scale = Vector2(0.9999998, 0.9999998)
-shape = SubResource("SeparationRayShape2D_nxogm")
-
-[node name="7" type="CollisionShape2D" parent="RigidBody2D/Area2D"]
-rotation = -0.7853982
-scale = Vector2(0.9999998, 0.9999998)
-shape = SubResource("SeparationRayShape2D_nxogm")
-
-[node name="Unit" type="Sprite2D" parent="RigidBody2D"]
-scale = Vector2(0.13000001, 0.28500003)
+[node name="Place2" type="Sprite2D" parent="."]
+position = Vector2(908.00006, 285.99997)
+rotation = 0.80207324
+scale = Vector2(2.625, 2.625)
 texture = ExtResource("1_ulcgi")
+
+[node name="GravitySensor" type="Area2D" parent="Place2"]
+visible = false
 metadata/_edit_lock_ = true
 
-[node name="Camera2D" type="Camera2D" parent="RigidBody2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Place2/GravitySensor"]
+position = Vector2(-56.761917, -57.904766)
+shape = SubResource("CircleShape2D_nxogm")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Place2/GravitySensor"]
+position = Vector2(57.142845, -58.285713)
+shape = SubResource("CircleShape2D_nxogm")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Place2/GravitySensor"]
+position = Vector2(-56.761917, 59.42857)
+shape = SubResource("CircleShape2D_nxogm")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Place2/GravitySensor"]
+position = Vector2(57.142845, 59.047623)
+shape = SubResource("CircleShape2D_nxogm")
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="Place2/GravitySensor"]
+position = Vector2(-1.6719103e-05, -68.57143)
+shape = SubResource("RectangleShape2D_3253y")
+
+[node name="CollisionShape2D6" type="CollisionShape2D" parent="Place2/GravitySensor"]
+position = Vector2(0.3809967, 69.17119)
+shape = SubResource("RectangleShape2D_3253y")
+
+[node name="CollisionShape2D7" type="CollisionShape2D" parent="Place2/GravitySensor"]
+position = Vector2(-67.42859, 0.5714264)
+shape = SubResource("RectangleShape2D_u3cyc")
+
+[node name="CollisionShape2D8" type="CollisionShape2D" parent="Place2/GravitySensor"]
+position = Vector2(67.80952, 0.5714264)
+shape = SubResource("RectangleShape2D_u3cyc")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Place2"]
+metadata/_edit_lock_ = true
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Place2/StaticBody2D"]
+polygon = PackedVector2Array(-60.190475, -59.428574, -52.190475, -64, 52.571426, -64, 60.190475, -59.047623, 64.000015, -51.428574, 64.000015, 52.952377, 59.047623, 60.190475, 52.952377, 64, -52.190475, 64, -59.428574, 59.809525, -64, 52.190475, -64, -52.190475)
+
+[node name="Place3" type="Sprite2D" parent="."]
+position = Vector2(68.00006, 741.00006)
+rotation = -2.115643
+scale = Vector2(2.625, 2.625)
+texture = ExtResource("1_ulcgi")
+
+[node name="GravitySensor" type="Area2D" parent="Place3"]
+visible = false
+metadata/_edit_lock_ = true
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Place3/GravitySensor"]
+position = Vector2(-56.761917, -57.904766)
+shape = SubResource("CircleShape2D_nxogm")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Place3/GravitySensor"]
+position = Vector2(57.142845, -58.285713)
+shape = SubResource("CircleShape2D_nxogm")
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Place3/GravitySensor"]
+position = Vector2(-56.761917, 59.42857)
+shape = SubResource("CircleShape2D_nxogm")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Place3/GravitySensor"]
+position = Vector2(57.142845, 59.047623)
+shape = SubResource("CircleShape2D_nxogm")
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="Place3/GravitySensor"]
+position = Vector2(-1.6719103e-05, -68.57143)
+shape = SubResource("RectangleShape2D_3253y")
+
+[node name="CollisionShape2D6" type="CollisionShape2D" parent="Place3/GravitySensor"]
+position = Vector2(0.3809967, 69.17119)
+shape = SubResource("RectangleShape2D_3253y")
+
+[node name="CollisionShape2D7" type="CollisionShape2D" parent="Place3/GravitySensor"]
+position = Vector2(-67.42859, 0.5714264)
+shape = SubResource("RectangleShape2D_u3cyc")
+
+[node name="CollisionShape2D8" type="CollisionShape2D" parent="Place3/GravitySensor"]
+position = Vector2(67.80952, 0.5714264)
+shape = SubResource("RectangleShape2D_u3cyc")
+
+[node name="StaticBody2D" type="StaticBody2D" parent="Place3"]
+metadata/_edit_lock_ = true
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Place3/StaticBody2D"]
+polygon = PackedVector2Array(-60.190475, -59.428574, -52.190475, -64, 52.571426, -64, 60.190475, -59.047623, 64.000015, -51.428574, 64.000015, 52.952377, 59.047623, 60.190475, 52.952377, 64, -52.190475, 64, -59.428574, 59.809525, -64, 52.190475, -64, -52.190475)
+
+[node name="Actor" parent="." instance=ExtResource("4_u3cyc")]
+position = Vector2(314, 143.00002)
+
+[node name="Camera2D2" type="Camera2D" parent="Actor"]
 scale = Vector2(1.0000001, 1.0000001)
 ignore_rotation = false
 rotation_smoothing_enabled = true
+rotation_smoothing_speed = 0.5
 metadata/_edit_lock_ = true
 
-[node name="RayCast2D" type="RayCast2D" parent="RigidBody2D"]
-visible = false
-scale = Vector2(1.0000002, 1.0000002)
-
-[node name="ShapeCast2D" type="ShapeCast2D" parent="RigidBody2D"]
-shape = SubResource("CircleShape2D_3253y")
-
-[node name="Node2D" type="Node2D" parent="."]
-visible = false
-position = Vector2(409, 74)
-scale = Vector2(1.0000001, 1.0000001)
-
-[connection signal="body_entered" from="RigidBody2D/Area2D" to="RigidBody2D" method="_on_area_2d_body_entered"]
-[connection signal="body_exited" from="RigidBody2D/Area2D" to="RigidBody2D" method="_on_area_2d_body_exited"]
-[connection signal="body_shape_entered" from="RigidBody2D/Area2D" to="RigidBody2D" method="_on_area_2d_body_shape_entered"]
-[connection signal="body_shape_exited" from="RigidBody2D/Area2D" to="RigidBody2D" method="_on_area_2d_body_shape_exited"]
+[node name="RayCast2D" type="RayCast2D" parent="."]
+position = Vector2(406, 266)
+target_position = Vector2(-53, -84)
