@@ -11,15 +11,13 @@ var up_force: Vector2 = Vector2.ZERO
 var gravity_force = 40
 var applied_force: Vector2 = Vector2(0,0)
 
-const MAX_SHAPE_CAST_MISS_TIME = 2
-var shape_cast_step: float = 1.0
-var was_collided: bool = false
-var stay_same_state_times = 0
+
+
+
 
 
 @onready var gravity_vector_rotation = 0
-var last_collider: CollisionObject2D = null
-var actual_collider: CollisionObject2D = null
+
 
 
 # Called when the node enters the scene tree for the first time.
@@ -47,43 +45,13 @@ func _physics_process(delta: float) -> void:
 	if abs(dang) > 0.01: #11.4 deg lesser just use physics
 		angular_velocity = dang
 		
-
-	last_collider = actual_collider
 	if caster.is_colliding():
-		#swap planet via picker
-		actual_collider = caster.get_collider(0)
-		if last_collider != actual_collider:
-			var global_outer = get_picker_global()
-			picker.reparent(actual_collider, false)
-			set_picker_global(global_outer)
-			last_collider = null
-			
 		var surface_normal = caster.get_collision_normal(0)
 		var dangle = (surface_normal * -1.0).angle()
 		gravity_vector_rotation = -PI/2 + dangle
 		
-	#searching gravity point
-	if caster.is_colliding():
-		#сброс промахов
-		if not was_collided:
-			was_collided = true
-			stay_same_state_times = 0
-			shape_cast_step = -1.0
-	else:
-		#reset found times
-		if was_collided:
-			was_collided = false
-			stay_same_state_times = 0
-			shape_cast_step = 1.0
-			
-	if stay_same_state_times >= MAX_SHAPE_CAST_MISS_TIME:
-		shape_cast_step = shape_cast_step * 2.0
-		stay_same_state_times = 0
-	(caster.shape as CircleShape2D).radius += shape_cast_step
-	stay_same_state_times += 1
+	super._physics_process(delta)
 		
-	
-	
 	
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("forward"):
