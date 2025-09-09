@@ -12,18 +12,16 @@ var gravity_force = 40
 var applied_force: Vector2 = Vector2(0,0)
 
 const MAX_SHAPE_CAST_MISS_TIME = 2
-var shape_cast_found_times = 0
 var shape_cast_step: float = 1.0
-var multiplier: int = 1
-
-
+var was_collided: bool = false
 var stay_same_state_times = 0
-@onready var gravity_vector_rotation = 0
 
+
+@onready var gravity_vector_rotation = 0
 var last_collider: CollisionObject2D = null
 var actual_collider: CollisionObject2D = null
 
-var was_collided: bool = false
+
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	super._ready()
@@ -64,24 +62,24 @@ func _physics_process(delta: float) -> void:
 		var dangle = (surface_normal * -1.0).angle()
 		gravity_vector_rotation = -PI/2 + dangle
 		
+	#searching gravity point
+	if caster.is_colliding():
 		#сброс промахов
 		if not was_collided:
 			was_collided = true
 			stay_same_state_times = 0
-			shape_cast_step = 1.0
-			multiplier = -1
+			shape_cast_step = -1.0
 	else:
 		#reset found times
 		if was_collided:
 			was_collided = false
 			stay_same_state_times = 0
 			shape_cast_step = 1.0
-			multiplier = 1
 			
 	if stay_same_state_times >= MAX_SHAPE_CAST_MISS_TIME:
-		shape_cast_step += shape_cast_step
+		shape_cast_step = shape_cast_step * 2.0
 		stay_same_state_times = 0
-	(caster.shape as CircleShape2D).radius += shape_cast_step * multiplier
+	(caster.shape as CircleShape2D).radius += shape_cast_step
 	stay_same_state_times += 1
 		
 	
