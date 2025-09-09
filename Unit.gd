@@ -13,8 +13,8 @@ var applied_force: Vector2 = Vector2(0,0)
 
 const MAX_SHAPE_CAST_MISS_TIME = 2
 var shape_cast_found_times = 0
-var shape_cast_not_foun_times = 0 #количество раз когда каст промахнулся
 var shape_cast_step: float = 1.0
+var multiplier: int = 1
 
 
 var stay_same_state_times = 0
@@ -23,7 +23,7 @@ var stay_same_state_times = 0
 var last_collider: CollisionObject2D = null
 var actual_collider: CollisionObject2D = null
 
-var last_time_collided: bool = false
+var was_collided: bool = false
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	super._ready()
@@ -52,17 +52,9 @@ func _physics_process(delta: float) -> void:
 
 	last_collider = actual_collider
 	if caster.is_colliding():
-		#сброс промахов
-		shape_cast_not_foun_times = 0
-		if not last_time_collided:
-			shape_cast_step = 1.0
-		#
-		var coll_cnt = $ShapeCast2D.get_collision_count()
-		
 		#swap planet via picker
-		actual_collider = $ShapeCast2D.get_collider(0)
+		actual_collider = caster.get_collider(0)
 		if last_collider != actual_collider:
-			print("Swapt collider")
 			var global_outer = get_picker_global()
 			picker.reparent(actual_collider, false)
 			set_picker_global(global_outer)
@@ -72,30 +64,28 @@ func _physics_process(delta: float) -> void:
 		var dangle = (surface_normal * -1.0).angle()
 		gravity_vector_rotation = -PI/2 + dangle
 		
-		#if was not collision before
-		shape_cast_found_times += 1
-		if shape_cast_found_times >= MAX_SHAPE_CAST_MISS_TIME:			
-			shape_cast_step += shape_cast_step
-			shape_cast_found_times = 0
-		shape_cast_increment = -shape_cast_step
-		
-		last_time_collided = true
-	else:
-		#reset found times
-		shape_cast_found_times = 0
-		if last_time_collided:
+		#сброс промахов
+		if not was_collided:
+			was_collided = true
 			stay_same_state_times = 0
 			shape_cast_step = 1.0
-			
-		shape_cast_not_foun_times += 1
-		if shape_cast_not_foun_times >= MAX_SHAPE_CAST_MISS_TIME:
-			shape_cast_step += shape_cast_step
+			multiplier = -1
+	else:
+		#reset found times
+		if was_collided:
+			was_collided = false
 			stay_same_state_times = 0
-			shape_cast_not_foun_times = 0
-		shape_cast_increment = shape_cast_step
-		last_time_collided = false
+			shape_cast_step = 1.0
+			multiplier = 1
+			
+	if stay_same_state_times >= MAX_SHAPE_CAST_MISS_TIME:
+		shape_cast_step += shape_cast_step
+		stay_same_state_times = 0
+	(caster.shape as CircleShape2D).radius += shape_cast_step * multiplier
+	stay_same_state_times += 1
 		
-	size_shape_cast()
+	
+	
 	
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("forward"):
