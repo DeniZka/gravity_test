@@ -1,30 +1,18 @@
 extends FlyingObject
 
-var ground_found: bool = false
-var ray_increment: int = 1
-var first_encounter: bool = false
 var ray: SeparationRayShape2D
-var ray_pair: Array = []
+#input forces
 var forward_force: Vector2 = Vector2.ZERO
 var backward_force: Vector2 = Vector2.ZERO
 var up_force: Vector2 = Vector2.ZERO
-var gravity_force = 40
-var applied_force: Vector2 = Vector2(0,0)
-
-
-
-
-
+var gravity_force = 90
 
 @onready var gravity_vector_rotation = 0
-
-
 
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	super._ready()
-	pre_position = global_position
-	pre_picker_outer = global_position #set picker outer point to self position
+
 
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	var node: RayCast2D = get_node("../RayCast2D")
@@ -58,18 +46,18 @@ func _input(event: InputEvent) -> void:
 		physics_material_override.friction = 0.3
 		forward_force = Vector2.RIGHT.rotated(gravity_vector_rotation) * 50
 	if event.is_action_released("forward"):
-		physics_material_override.friction = 1.0
+		physics_material_override.friction = 1000
 		forward_force = Vector2.ZERO
 	
 	if event.is_action_pressed("backward"):
 		physics_material_override.friction = 0.3
 		backward_force = Vector2.LEFT.rotated(gravity_vector_rotation) * 50
 	if event.is_action_released("backward"):
-		physics_material_override.friction = 1.0
+		physics_material_override.friction = 1000
 		backward_force = Vector2.ZERO
 		
 	if event.is_action_pressed("force"):
-		up_force = Vector2.UP.rotated(gravity_vector_rotation) * 100
+		up_force = Vector2.UP.rotated(gravity_vector_rotation) * 200
 	if event.is_action_released("force"):
 		up_force = Vector2.ZERO
 	

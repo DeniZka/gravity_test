@@ -1,10 +1,12 @@
-[gd_scene load_steps=14 format=3 uid="uid://dkrqw355dj5dq"]
+[gd_scene load_steps=19 format=3 uid="uid://dkrqw355dj5dq"]
 
 [ext_resource type="Script" uid="uid://d1fttd360x0jv" path="res://scene.gd" id="1_m7jmp"]
 [ext_resource type="Texture2D" uid="uid://cj6i6v7ep4mua" path="res://icon.svg" id="1_ulcgi"]
 [ext_resource type="PackedScene" uid="uid://dtp43fn7aofrb" path="res://planet.tscn" id="2_3253y"]
 [ext_resource type="Script" uid="uid://dve55gxvicm7k" path="res://moon.gd" id="3_u3cyc"]
 [ext_resource type="PackedScene" uid="uid://dsjj2m64mfrhp" path="res://actor.tscn" id="4_u3cyc"]
+[ext_resource type="Script" uid="uid://ddea2wgcdhkhq" path="res://flying_object.gd" id="6_y2354"]
+[ext_resource type="Texture2D" uid="uid://blvxaah04dx40" path="res://MeinPlanet.png" id="7_ni31j"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nxogm"]
 radius = 18.317427
@@ -23,6 +25,7 @@ size = Vector2(695.5, 91)
 
 [sub_resource type="Animation" id="Animation_m7jmp"]
 length = 0.001
+loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
@@ -34,6 +37,18 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1),
 "update": 0,
 "values": [Vector2(0, 0)]
+}
+tracks/1/type = "value"
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/path = NodePath("AnimatableBody2D:rotation")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [0.0]
 }
 
 [sub_resource type="Animation" id="Animation_u3cyc"]
@@ -58,11 +73,34 @@ tracks/0/keys = {
 "values": [Vector2(0, 0), Vector2(60, 0), Vector2(0, 0), Vector2(-60, 0), Vector2(0, 0)]
 }
 
+[sub_resource type="Animation" id="Animation_ni31j"]
+resource_name = "planet"
+length = 80.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatableBody2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 40, 80),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 3.141592653589793, 6.283185307179586]
+}
+
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_y2354"]
 _data = {
 &"RESET": SubResource("Animation_m7jmp"),
+&"planet": SubResource("Animation_ni31j"),
 &"plank": SubResource("Animation_u3cyc")
 }
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ni31j"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_xlvrw"]
+radius = 770.68
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_m7jmp")
@@ -260,3 +298,30 @@ texture = ExtResource("1_ulcgi")
 libraries = {
 &"": SubResource("AnimationLibrary_y2354")
 }
+
+[node name="AnimationPlayer2" type="AnimationPlayer" parent="."]
+callback_mode_process = 0
+libraries = {
+&"": SubResource("AnimationLibrary_y2354")
+}
+
+[node name="RigidBody2D2" type="RigidBody2D" parent="."]
+position = Vector2(575, 9)
+script = ExtResource("6_y2354")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D2"]
+shape = SubResource("CircleShape2D_ni31j")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="SubViewport" type="SubViewport" parent="."]
+
+[node name="AnimatableBody2D" type="AnimatableBody2D" parent="."]
+position = Vector2(1940, 437)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="AnimatableBody2D"]
+shape = SubResource("CircleShape2D_xlvrw")
+
+[node name="MeinPlanet" type="Sprite2D" parent="AnimatableBody2D"]
+scale = Vector2(1.68, 1.68)
+texture = ExtResource("7_ni31j")
