@@ -1,4 +1,4 @@
-extends RigidBody2D
+extends FlyingObject
 
 var ground_found: bool = false
 var ray_increment: int = 1
@@ -11,156 +11,89 @@ var up_force: Vector2 = Vector2.ZERO
 var gravity_force = 40
 var applied_force: Vector2 = Vector2(0,0)
 
-const CENTRAL = 0
-const OUTER = 1
-
 const MAX_SHAPE_CAST_MISS_TIME = 2
 var shape_cast_found_times = 0
 var shape_cast_not_foun_times = 0 #количество раз когда каст промахнулся
 var shape_cast_step: float = 1.0
-var shape_cast_increment: float = 1.0
-@onready var shape_cast: ShapeCast2D = $ShapeCast2D
+
+
+var stay_same_state_times = 0
 @onready var gravity_vector_rotation = 0
 
-@onready var picker: Line2D = $Picker
 var last_collider: CollisionObject2D = null
 var actual_collider: CollisionObject2D = null
-var pre_position: Vector2 = Vector2.ZERO
-var pre_picker_outer: Vector2 = Vector2.ZERO
+
+var last_time_collided: bool = false
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
+	super._ready()
 	pre_position = global_position
-	picker.points[OUTER] = to_local(global_position)
-	pass # Replace with function body.
+	pre_picker_outer = global_position #set picker outer point to self position
 
-
-func size_shape_cast():
-	(shape_cast.shape as CircleShape2D).radius += shape_cast_increment
-	
-func angle_to_angle(from, to):
-	return fposmod(to-from + PI, PI*2) - PI
-	
-func get_picker_global() -> Vector2:
-	return picker.to_global(picker.points[OUTER])
-	
-func set_picker_global(point: Vector2):
-	picker.points[OUTER] = picker.to_local(point)
-	
-	
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
-	#print("AFTER: ", global_position, get_picker_global())
-	var delta_move = global_position - pre_position
-	var delta_planet_point_move = get_picker_global() - pre_picker_outer
-	#var v = delta_move - delta_planet_point_move
-	$"../RayCast2D".position = global_position                         
-	$"../RayCast2D".target_position = delta_planet_point_move * 1000 #v * 1000
-	#print(v)
-	#if on fly little compensation
-	if get_contact_count() == 0                       :
-		global_position += delta_planet_point_move
-	#print(delta_move)
-	#print(delta_planet_point_move)
-	#global_position += v
-	
-	#after _physics process
-	if actual_collider and actual_collider == last_collider:
-		#TODO: skip if STATIC
-		#print("Hello")
-		var actual_picker_outer = get_picker_global()
-		if actual_picker_outer != pre_picker_outer:
-			var dv = actual_picker_outer - pre_picker_outer
-			
-			#global_position += dv
-		#pre_picker_outer = actual_picker_outer
-	else:
-		#pre_picker_outer = global_position
-		pass
+	var node: RayCast2D = get_node("../RayCast2D")
+	if node:
+		node.position = global_position                         
+		node.target_position = delta_planet_point_move * 1000 #v * 1000
+	super._integrate_forces(state)
 		
-	set_picker_global(global_position)
-	pre_position = global_position
-		
-		
-	#if shape_cast.is_colliding():
-		#print("COLLIDING")
-		#var collider = $ShapeCast2D.get_collider(0)
-		#if collider and last_collider == collider:
-			#var dv = picker.to_global(picker.points[OUTER]) - global_position
-			#print(dv)
-			#global_position += dv
-		#
-	#print("IF: ", picker.to_global(picker.points[OUTER]), " - ", global_position)
 	   	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
 	#print("BEFORE: ", global_position, " ", get_picker_global())
 	apply_central_force(forward_force + backward_force + up_force + Vector2.DOWN.rotated(gravity_vector_rotation) * gravity_force)
-	pre_picker_outer = get_picker_global()
+	#pre_picker_outer = get_picker_global() #buffer picker outer point before phisics
 
-	#angle correction
+	#do angle correction to gravity direction
 	var dang = angle_to_angle(rotation, gravity_vector_rotation)
 	if abs(dang) > 0.01: #11.4 deg lesser just use physics
 		angular_velocity = dang
 		
 
 	last_collider = actual_collider
-	if shape_cast.is_colliding():
-		#print("COLLIDING!!!")
+	if caster.is_colliding():
 		#сброс промахов
 		shape_cast_not_foun_times = 0
+		if not last_time_collided:
+			shape_cast_step = 1.0
 		#
 		var coll_cnt = $ShapeCast2D.get_collision_count()
 		
+		#swap planet via picker
 		actual_collider = $ShapeCast2D.get_collider(0)
-
-		if last_collider == actual_collider:
-			#TODO:
-			#print("PP: ", picker.to_global(picker.points[OUTER]), " - ", global_position)
-			#picker.points[OUTER] = picker.to_local(global_position)
-			pass
-		else:
-			#print("reparent")
+		if last_collider != actual_collider:
+			print("Swapt collider")
 			var global_outer = get_picker_global()
 			picker.reparent(actual_collider, false)
 			set_picker_global(global_outer)
-			
-			#picker.points[CENTRAL] = Vector2(10, 0)
-			#picker.points[OUTER] = picker.to_local(global_position)
 			last_collider = null
 			
-			
-			
-		if coll_cnt > 1:
-			#TODO: узнать количество столкновений снизу им приоритет
-			#остальные скип
-			
-			#если несколько коллизий снизу нужно снова уменьшить шаг интегрирования коллизионной сферы
-			#shape_cast_increment = -shape_cast_step
-			#shape_cast_step = shape_cast_step / 2.0
-			pass
-			
-			
-		
-		
-		var surface_normal = shape_cast.get_collision_normal(0)
+		var surface_normal = caster.get_collision_normal(0)
 		var dangle = (surface_normal * -1.0).angle()
 		gravity_vector_rotation = -PI/2 + dangle
 		
 		#if was not collision before
 		shape_cast_found_times += 1
 		if shape_cast_found_times >= MAX_SHAPE_CAST_MISS_TIME:			
-			shape_cast_step = shape_cast_step / 2.0
-			if shape_cast_step < 1.0:
-				shape_cast_step = 1.0
+			shape_cast_step += shape_cast_step
 			shape_cast_found_times = 0
 		shape_cast_increment = -shape_cast_step
+		
+		last_time_collided = true
 	else:
 		#reset found times
 		shape_cast_found_times = 0
+		if last_time_collided:
+			stay_same_state_times = 0
+			shape_cast_step = 1.0
+			
 		shape_cast_not_foun_times += 1
 		if shape_cast_not_foun_times >= MAX_SHAPE_CAST_MISS_TIME:
-			shape_cast_step += shape_cast_step #resize x 2
+			shape_cast_step += shape_cast_step
+			stay_same_state_times = 0
 			shape_cast_not_foun_times = 0
 		shape_cast_increment = shape_cast_step
+		last_time_collided = false
 		
 	size_shape_cast()
 	

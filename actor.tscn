@@ -1,4 +1,4 @@
-[gd_scene load_steps=6 format=3 uid="uid://dsjj2m64mfrhp"]
+[gd_scene load_steps=5 format=3 uid="uid://dsjj2m64mfrhp"]
 
 [ext_resource type="Script" uid="uid://klyy2xpn5643" path="res://Unit.gd" id="1_oka2p"]
 [ext_resource type="Texture2D" uid="uid://cj6i6v7ep4mua" path="res://icon.svg" id="2_epby1"]
@@ -9,9 +9,6 @@ friction = 0.3
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_nxogm"]
 radius = 3.45
 height = 15.991821
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_3253y"]
-radius = 20.0
 
 [node name="Actor" type="RigidBody2D"]
 scale = Vector2(0.99999994, 0.99999994)
@@ -33,13 +30,3 @@ shape = SubResource("CapsuleShape2D_nxogm")
 visible = false
 scale = Vector2(1.0000002, 1.0000002)
 target_position = Vector2(0, 21.005)
-
-[node name="ShapeCast2D" type="ShapeCast2D" parent="."]
-modulate = Color(18.892157, 18.892157, 18.892157, 0.03137255)
-shape = SubResource("CircleShape2D_3253y")
-target_position = Vector2(0, 0)
-
-[node name="Picker" type="Line2D" parent="."]
-z_index = 1
-points = PackedVector2Array(0, 0, 10, 0)
-width = 1.0

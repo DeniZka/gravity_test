@@ -1,9 +1,7 @@
-[gd_scene load_steps=4 format=3 uid="uid://dtp43fn7aofrb"]
+[gd_scene load_steps=3 format=3 uid="uid://dtp43fn7aofrb"]
 
 [ext_resource type="Texture2D" uid="uid://cj6i6v7ep4mua" path="res://icon.svg" id="1_1odxm"]
 [ext_resource type="Script" uid="uid://cwigillxieusl" path="res://planet.gd" id="1_mtr83"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_1odxm"]
 
 [node name="Planet" type="RigidBody2D"]
 mass = 1000.0
@@ -17,10 +15,3 @@ texture = ExtResource("1_1odxm")
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
 scale = Vector2(2.625, 2.625)
 polygon = PackedVector2Array(-60.190475, -59.428574, -52.190475, -64, 52.571426, -64, 60.190475, -59.047623, 64.000015, -51.428574, 64.000015, 52.952377, 59.047623, 60.190475, 52.952377, 64, -52.190475, 64, -59.428574, 59.809525, -64, 52.190475, -64, -52.190475)
-
-[node name="Picker" type="CollisionShape2D" parent="."]
-position = Vector2(-247, -256)
-shape = SubResource("CircleShape2D_1odxm")
-
-[node name="Finder" type="Line2D" parent="."]
-points = PackedVector2Array(0, 0, 203.515, 0)
