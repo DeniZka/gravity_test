@@ -51,6 +51,23 @@ tracks/1/keys = {
 "values": [0.0]
 }
 
+[sub_resource type="Animation" id="Animation_ni31j"]
+resource_name = "planet"
+length = 80.0
+loop_mode = 1
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("AnimatableBody2D:rotation")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 40, 80),
+"transitions": PackedFloat32Array(1, 1, 1),
+"update": 0,
+"values": [0.0, 3.141592653589793, 6.283185307179586]
+}
+
 [sub_resource type="Animation" id="Animation_u3cyc"]
 resource_name = "plank"
 length = 8.0
@@ -71,23 +88,6 @@ tracks/0/keys = {
 "transitions": PackedFloat32Array(1, 0.5358869, 2.928171, 0.4999999, 3.4822025),
 "update": 0,
 "values": [Vector2(0, 0), Vector2(60, 0), Vector2(0, 0), Vector2(-60, 0), Vector2(0, 0)]
-}
-
-[sub_resource type="Animation" id="Animation_ni31j"]
-resource_name = "planet"
-length = 80.0
-loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("AnimatableBody2D:rotation")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 40, 80),
-"transitions": PackedFloat32Array(1, 1, 1),
-"update": 0,
-"values": [0.0, 3.141592653589793, 6.283185307179586]
 }
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_y2354"]

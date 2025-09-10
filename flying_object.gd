@@ -19,6 +19,9 @@ var was_collided: bool = false
 var stay_same_state_times = 0
 var shape_cast_step: float = 1.0
 
+var actually_colliding: bool = false #colliding with shape another of 
+var first_collider_idx: int = -1
+
 func _ready() -> void:
 	pre_position = global_position
 	pre_picker_outer = global_position #set picker outer point to self position
@@ -37,7 +40,7 @@ func _ready() -> void:
 	caster.target_position = Vector2.ZERO
 	caster.shape = CircleShape2D.new()
 	caster.shape.radius = 5
-	caster.modulate = Color(1.0, 1.0, 1.0, 0.141)
+	caster.modulate = Color(1.0, 1.0, 1.0, 0.11)
 	
 func get_picker_global() -> Vector2:
 	return picker.to_global(picker.points[OUTER])
@@ -51,19 +54,7 @@ func angle_to_angle(from, to):
 func _physics_process(delta: float) -> void:
 	#swap planet
 	last_collider = actual_collider
-	
-	#skip sellf like gravity
-	var actually_colliding: bool = false
-	var first_collider_idx: int = 0
-	if caster.is_colliding():
-		for col_idx in range(caster.get_collision_count()):
-			var collider = caster.get_collider(col_idx)
-			if not collider is FlyingObject:
-				first_collider_idx = col_idx
-				actually_colliding = true
-				break
-			
-	if actually_colliding:
+	if actually_colliding and first_collider_idx >= 0:
 		actual_collider = caster.get_collider(first_collider_idx)
 		if last_collider != actual_collider:
 			var global_outer = get_picker_global()
@@ -91,6 +82,18 @@ func _physics_process(delta: float) -> void:
 	
 	
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void: #goes after forces are implemented
+	actually_colliding = true
+	first_collider_idx = -1
+	if caster.is_colliding():
+		#print(self.name, " Colliding  PP ", caster.get_collision_count())
+		for col_idx in range(caster.get_collision_count()):
+			var collider = caster.get_collider(col_idx)
+			if not collider is FlyingObject:
+				first_collider_idx = col_idx
+				actually_colliding = true
+				break
+				
+	#print(self.name, " Colliding IF ", caster.get_collision_count())
 	#print("AFTER: ", global_position, pre_position, get_picker_global())
 	#var delta_move = global_position - pre_position
 	delta_planet_point_move = get_picker_global() - pre_picker_outer
