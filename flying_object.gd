@@ -20,7 +20,10 @@ var stay_same_state_times = 0
 var shape_cast_step: float = 1.0
 
 var actually_colliding: bool = false #colliding with shape another of 
-var first_collider_idx: int = -1
+var actually_collider_first_idx: int = -1
+
+@onready var gravity_vector_rotation = 0
+var planet_gravity: float = 100 #TODO: get from planet collider object
 
 func _ready() -> void:
 	pre_position = global_position
@@ -48,14 +51,18 @@ func get_picker_global() -> Vector2:
 func set_picker_global(point: Vector2):
 	picker.points[OUTER] = picker.to_local(point)
 	
-func angle_to_angle(from, to):
-	return fposmod(to-from + PI, PI*2) - PI
-
 func _physics_process(delta: float) -> void:
+	apply_central_force(Vector2.DOWN.rotated(gravity_vector_rotation) * planet_gravity)
+	
 	#swap planet
 	last_collider = actual_collider
-	if actually_colliding and first_collider_idx >= 0:
-		actual_collider = caster.get_collider(first_collider_idx)
+	if actually_colliding and actually_collider_first_idx >= 0:
+		#gravity
+		var surface_normal = caster.get_collision_normal(actually_collider_first_idx)
+		var dangle = (surface_normal * -1.0).angle()
+		gravity_vector_rotation = -PI/2 + dangle
+		
+		actual_collider = caster.get_collider(actually_collider_first_idx)
 		if last_collider != actual_collider:
 			var global_outer = get_picker_global()
 			picker.reparent(actual_collider, false)
@@ -83,13 +90,13 @@ func _physics_process(delta: float) -> void:
 	
 func _integrate_forces(state: PhysicsDirectBodyState2D) -> void: #goes after forces are implemented
 	actually_colliding = true
-	first_collider_idx = -1
+	actually_collider_first_idx = -1
 	if caster.is_colliding():
 		#print(self.name, " Colliding  PP ", caster.get_collision_count())
 		for col_idx in range(caster.get_collision_count()):
 			var collider = caster.get_collider(col_idx)
 			if not collider is FlyingObject:
-				first_collider_idx = col_idx
+				actually_collider_first_idx = col_idx
 				actually_colliding = true
 				break
 				
