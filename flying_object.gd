@@ -25,6 +25,8 @@ var actually_collider_first_idx: int = -1
 @onready var gravity_vector_rotation = 0
 var planet_gravity: float = 100 #TODO: get from planet collider object
 
+var owner_area: OwnerArea = null
+
 func _ready() -> void:
 	pre_position = global_position
 	pre_picker_outer = global_position #set picker outer point to self position
@@ -53,64 +55,66 @@ func set_picker_global(point: Vector2):
 	
 func _physics_process(delta: float) -> void:
 	#apply_central_force(Vector2.DOWN.rotated(gravity_vector_rotation) * planet_gravity)
-	actually_colliding = true
-	actually_collider_first_idx = -1
-	if caster.is_colliding():
-
-		#print(self.name, " Colliding  PP ", caster.get_collision_count())
-		for col_idx in range(caster.get_collision_count()):
-			var collider = caster.get_collider(col_idx)
-			if not collider is FlyingObject:
-				actually_collider_first_idx = col_idx
-				actually_colliding = true
-				break
-				
-	#print(self.name, " Colliding IF ", caster.get_collision_count())
-	#print("AFTER: ", global_position, pre_position, get_picker_global())
-	#var delta_move = global_position - pre_position
-	delta_planet_point_move = get_picker_global() - pre_picker_outer
-	#var v = delta_move - delta_planet_point_move
-	#print(v)
-
-	#if on fly little compensation
-	#if get_contact_count() == 0:
-	#	global_position += delta_planet_point_move
-	
-	set_picker_global(global_position)
-	pre_position = global_position
-	pre_picker_outer = global_position #must be there (not in physiscs_process due to bug)
-	
-	#swap planet
-	last_collider = actual_collider
-	if actually_colliding and actually_collider_first_idx >= 0:
-		#gravity
-		var surface_normal = caster.get_collision_normal(actually_collider_first_idx)
-		var dangle = (surface_normal * -1.0).angle()
-		gravity_vector_rotation = -PI/2 + dangle
-		
-		actual_collider = caster.get_collider(actually_collider_first_idx)
-		if last_collider != actual_collider:
-			var global_outer = get_picker_global()
-			picker.reparent(actual_collider, false)
-			set_picker_global(global_outer)
-			last_collider = null
-			
-		#сброс промахов
-		if not was_collided:
-			was_collided = true
-			stay_same_state_times = 0
-			shape_cast_step = -1.0
+	if not owner_area:
+		(caster.shape as CircleShape2D).radius = 10
 	else:
-		#reset found times
-		if was_collided:
-			was_collided = false
-			stay_same_state_times = 0
-			shape_cast_step = 1.0
+		actually_colliding = true
+		actually_collider_first_idx = -1
+		if caster.is_colliding():
+			#print(self.name, " Colliding  PP ", caster.get_collision_count())
+			for col_idx in range(caster.get_collision_count()):
+				var collider = caster.get_collider(col_idx)
+				if collider == owner_area.get_master():
+					actually_collider_first_idx = col_idx
+					actually_colliding = true
+					break
+					
+		#print(self.name, " Colliding IF ", caster.get_collision_count())
+		#print("AFTER: ", global_position, pre_position, get_picker_global())
+		#var delta_move = global_position - pre_position
+		delta_planet_point_move = get_picker_global() - pre_picker_outer
+		#var v = delta_move - delta_planet_point_move
+		#print(v)
+
+		#if on fly little compensation
+		#if get_contact_count() == 0:
+		#	global_position += delta_planet_point_move
+		
+		set_picker_global(global_position)
+		pre_position = global_position
+		pre_picker_outer = global_position #must be there (not in physiscs_process due to bug)
+		
+		#swap planet
+		last_collider = actual_collider
+		if actually_colliding and actually_collider_first_idx >= 0:
+			#gravity
+			var surface_normal = caster.get_collision_normal(actually_collider_first_idx)
+			var dangle = (surface_normal * -1.0).angle()
+			gravity_vector_rotation = -PI/2 + dangle
 			
-	if stay_same_state_times >= MAX_SHAPE_CAST_MISS_TIME:
-		shape_cast_step = shape_cast_step * 2.0
-		stay_same_state_times = 0
-	(caster.shape as CircleShape2D).radius += shape_cast_step
-	stay_same_state_times += 1
+			actual_collider = caster.get_collider(actually_collider_first_idx)
+			if last_collider != actual_collider:
+				var global_outer = get_picker_global()
+				picker.reparent(actual_collider, false)
+				set_picker_global(global_outer)
+				last_collider = null
+				
+			#сброс промахов
+			if not was_collided:
+				was_collided = true
+				stay_same_state_times = 0
+				shape_cast_step = -1.0
+		else:
+			#reset found times
+			if was_collided:
+				was_collided = false
+				stay_same_state_times = 0
+				shape_cast_step = 1.0
+				
+		if stay_same_state_times >= MAX_SHAPE_CAST_MISS_TIME:
+			shape_cast_step = shape_cast_step * 2.0
+			stay_same_state_times = 0
+		(caster.shape as CircleShape2D).radius += shape_cast_step
+		stay_same_state_times += 1
 	
 	

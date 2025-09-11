@@ -8,7 +8,7 @@ func _ready() -> void:
 
 
 func _on_character_body_2d_parent_found(area: Area2D) -> void:
-	if area is GravityArea:
+	if area is OwnerArea:
 		var planet = area.get_master()
 		player.reparent(planet)
 

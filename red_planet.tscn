@@ -1,11 +1,15 @@
-[gd_scene load_steps=6 format=3 uid="uid://ccehe80xetj6t"]
+[gd_scene load_steps=8 format=3 uid="uid://ccehe80xetj6t"]
 
 [ext_resource type="Script" uid="uid://dl1mvpq2oswla" path="res://gravity_area.gd" id="1_606m0"]
 [ext_resource type="Script" uid="uid://yaka46uyewui" path="res://red_planet.gd" id="1_waapx"]
 [ext_resource type="Texture2D" uid="uid://blvxaah04dx40" path="res://MeinPlanet.png" id="2_waapx"]
+[ext_resource type="Script" uid="uid://3rbkavm5a804" path="res://owner_area.gd" id="3_amldy"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_73fnb"]
 radius = 1524.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_amldy"]
+radius = 1100.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_xlvrw"]
 radius = 770.68
@@ -13,12 +17,18 @@ radius = 770.68
 [node name="RedPlanet" type="AnimatableBody2D"]
 script = ExtResource("1_waapx")
 
-[node name="Area2D" type="Area2D" parent="."]
+[node name="GravityArea" type="Area2D" parent="."]
 script = ExtResource("1_606m0")
-gravity_power = 180.0
+gravity_power = 9000.0
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+[node name="CollisionShape2D" type="CollisionShape2D" parent="GravityArea"]
 shape = SubResource("CircleShape2D_73fnb")
+
+[node name="OwnerArea" type="Area2D" parent="."]
+script = ExtResource("3_amldy")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="OwnerArea"]
+shape = SubResource("CircleShape2D_amldy")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_xlvrw")
