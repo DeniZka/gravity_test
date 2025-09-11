@@ -17,16 +17,14 @@ func _integrate_forces(state: PhysicsDirectBodyState2D) -> void:
 	if node:
 		node.position = global_position                         
 		node.target_position = delta_planet_point_move * 1000 #v * 1000
-	super._integrate_forces(state)
+	#super._integrate_forces(state)
 		
 func angle_to_angle(from, to):
 	return fposmod(to-from + PI, PI*2) - PI
 	
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _physics_process(delta: float) -> void:
-	#print("BEFORE: ", global_position, " ", get_picker_global())
-	apply_central_force(forward_force + backward_force + up_force)
-	#pre_picker_outer = get_picker_global() #buffer picker outer point before phisics
+	#apply_central_force(forward_force + backward_force + up_force)
 
 	#do angle correction to gravity direction
 	var dang = angle_to_angle(rotation, gravity_vector_rotation)
@@ -37,23 +35,24 @@ func _physics_process(delta: float) -> void:
 		
 	
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("forward"):
-		physics_material_override.friction = 0.3
-		forward_force = Vector2.RIGHT.rotated(gravity_vector_rotation) * 50
-	if event.is_action_released("forward"):
-		physics_material_override.friction = 1000
-		forward_force = Vector2.ZERO
-	
-	if event.is_action_pressed("backward"):
-		physics_material_override.friction = 0.3
-		backward_force = Vector2.LEFT.rotated(gravity_vector_rotation) * 50
-	if event.is_action_released("backward"):
-		physics_material_override.friction = 1000
-		backward_force = Vector2.ZERO
-		
-	if event.is_action_pressed("force"):
-		up_force = Vector2.UP.rotated(gravity_vector_rotation) * 200
-	if event.is_action_released("force"):
-		up_force = Vector2.ZERO
+	#if event.is_action_pressed("forward"):
+		#physics_material_override.friction = 0.3
+		#forward_force = Vector2.RIGHT.rotated(gravity_vector_rotation) * 50
+	#if event.is_action_released("forward"):
+		#physics_material_override.friction = 1000
+		#forward_force = Vector2.ZERO
+	#
+	#if event.is_action_pressed("backward"):
+		#physics_material_override.friction = 0.3
+		#backward_force = Vector2.LEFT.rotated(gravity_vector_rotation) * 50
+	#if event.is_action_released("backward"):
+		#physics_material_override.friction = 1000
+		#backward_force = Vector2.ZERO
+		#
+	#if event.is_action_pressed("force"):
+		#up_force = Vector2.UP.rotated(gravity_vector_rotation) * 200
+	#if event.is_action_released("force"):
+		#up_force = Vector2.ZERO
+	pass
 	
 	

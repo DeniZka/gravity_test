@@ -1,5 +1,5 @@
 class_name FlyingObject
-extends RigidBody2D
+extends CharacterBody2D
 
 const CENTRAL = 0
 const OUTER = 1
@@ -52,7 +52,33 @@ func set_picker_global(point: Vector2):
 	picker.points[OUTER] = picker.to_local(point)
 	
 func _physics_process(delta: float) -> void:
-	apply_central_force(Vector2.DOWN.rotated(gravity_vector_rotation) * planet_gravity)
+	#apply_central_force(Vector2.DOWN.rotated(gravity_vector_rotation) * planet_gravity)
+	actually_colliding = true
+	actually_collider_first_idx = -1
+	if caster.is_colliding():
+
+		#print(self.name, " Colliding  PP ", caster.get_collision_count())
+		for col_idx in range(caster.get_collision_count()):
+			var collider = caster.get_collider(col_idx)
+			if not collider is FlyingObject:
+				actually_collider_first_idx = col_idx
+				actually_colliding = true
+				break
+				
+	#print(self.name, " Colliding IF ", caster.get_collision_count())
+	#print("AFTER: ", global_position, pre_position, get_picker_global())
+	#var delta_move = global_position - pre_position
+	delta_planet_point_move = get_picker_global() - pre_picker_outer
+	#var v = delta_move - delta_planet_point_move
+	#print(v)
+
+	#if on fly little compensation
+	#if get_contact_count() == 0:
+	#	global_position += delta_planet_point_move
+	
+	set_picker_global(global_position)
+	pre_position = global_position
+	pre_picker_outer = global_position #must be there (not in physiscs_process due to bug)
 	
 	#swap planet
 	last_collider = actual_collider
@@ -88,29 +114,3 @@ func _physics_process(delta: float) -> void:
 	stay_same_state_times += 1
 	
 	
-func _integrate_forces(state: PhysicsDirectBodyState2D) -> void: #goes after forces are implemented
-	actually_colliding = true
-	actually_collider_first_idx = -1
-	if caster.is_colliding():
-		#print(self.name, " Colliding  PP ", caster.get_collision_count())
-		for col_idx in range(caster.get_collision_count()):
-			var collider = caster.get_collider(col_idx)
-			if not collider is FlyingObject:
-				actually_collider_first_idx = col_idx
-				actually_colliding = true
-				break
-				
-	#print(self.name, " Colliding IF ", caster.get_collision_count())
-	#print("AFTER: ", global_position, pre_position, get_picker_global())
-	#var delta_move = global_position - pre_position
-	delta_planet_point_move = get_picker_global() - pre_picker_outer
-	#var v = delta_move - delta_planet_point_move
-	#print(v)
-
-	#if on fly little compensation
-	if get_contact_count() == 0:
-		global_position += delta_planet_point_move
-	
-	set_picker_global(global_position)
-	pre_position = global_position
-	pre_picker_outer = global_position #must be there (not in physiscs_process due to bug)

@@ -5,6 +5,7 @@ extends RigidBody2D
 func _ready() -> void:
 	#constant_torque = 2000000.0
 	#constant_force.y = 1000
+	$Gravity.set_master(self)
 	pass # Replace with function body.
 
 

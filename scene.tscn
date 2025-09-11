@@ -1,12 +1,12 @@
-[gd_scene load_steps=19 format=3 uid="uid://dkrqw355dj5dq"]
+[gd_scene load_steps=17 format=3 uid="uid://dkrqw355dj5dq"]
 
 [ext_resource type="Script" uid="uid://d1fttd360x0jv" path="res://scene.gd" id="1_m7jmp"]
 [ext_resource type="Texture2D" uid="uid://cj6i6v7ep4mua" path="res://icon.svg" id="1_ulcgi"]
 [ext_resource type="PackedScene" uid="uid://dtp43fn7aofrb" path="res://planet.tscn" id="2_3253y"]
 [ext_resource type="Script" uid="uid://dve55gxvicm7k" path="res://moon.gd" id="3_u3cyc"]
-[ext_resource type="PackedScene" uid="uid://dsjj2m64mfrhp" path="res://actor.tscn" id="4_u3cyc"]
-[ext_resource type="Script" uid="uid://ddea2wgcdhkhq" path="res://flying_object.gd" id="6_y2354"]
-[ext_resource type="Texture2D" uid="uid://blvxaah04dx40" path="res://MeinPlanet.png" id="7_ni31j"]
+[ext_resource type="PackedScene" uid="uid://ccehe80xetj6t" path="res://red_planet.tscn" id="5_ni31j"]
+[ext_resource type="PackedScene" uid="uid://buap177hs2q6p" path="res://character.tscn" id="5_xlvrw"]
+[ext_resource type="Script" uid="uid://d3gnd02cuy60m" path="res://camera_2d.gd" id="7_xlvrw"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nxogm"]
 radius = 18.317427
@@ -41,7 +41,7 @@ tracks/0/keys = {
 tracks/1/type = "value"
 tracks/1/imported = false
 tracks/1/enabled = true
-tracks/1/path = NodePath("AnimatableBody2D:rotation")
+tracks/1/path = NodePath("RedPlanet:rotation")
 tracks/1/interp = 1
 tracks/1/loop_wrap = true
 tracks/1/keys = {
@@ -58,7 +58,7 @@ loop_mode = 1
 tracks/0/type = "value"
 tracks/0/imported = false
 tracks/0/enabled = true
-tracks/0/path = NodePath("AnimatableBody2D:rotation")
+tracks/0/path = NodePath("RedPlanet:rotation")
 tracks/0/interp = 1
 tracks/0/loop_wrap = true
 tracks/0/keys = {
@@ -96,11 +96,6 @@ _data = {
 &"planet": SubResource("Animation_ni31j"),
 &"plank": SubResource("Animation_u3cyc")
 }
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_ni31j"]
-
-[sub_resource type="CircleShape2D" id="CircleShape2D_xlvrw"]
-radius = 770.68
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_m7jmp")
@@ -163,11 +158,11 @@ shape = SubResource("CircleShape2D_u3cyc")
 [node name="Polygon2D" type="Polygon2D" parent="Moon"]
 polygon = PackedVector2Array(-1, -39, 10, -38, 20, -34, 28, -28, 34, -20, 38, -10, 39, 0, 38, 11, 34, 20, 28, 28, 20, 34, 11, 38, 0, 40, -10, 38, -21, 34, -28, 28, -34, 20, -38, 10, -39, 0, -38, -10, -34, -19, -28, -27, -20, -33, -10, -38)
 
-[node name="Planet" parent="." instance=ExtResource("2_3253y")]
+[node name="PlanetRotating" parent="." instance=ExtResource("2_3253y")]
 position = Vector2(-48, 351)
 constant_torque = 2000000.0
 
-[node name="Polygon2D" type="Polygon2D" parent="Planet"]
+[node name="Polygon2D" type="Polygon2D" parent="PlanetRotating"]
 position = Vector2(201, -248)
 polygon = PackedVector2Array(-448, -18, -442, -16, -439, -12, -438, -8, -439, -4, -442, 0, -447, 2, -452, 1, -455, -1, -457, -4, -458, -8, -457, -12, -454, -16)
 
@@ -267,17 +262,6 @@ metadata/_edit_lock_ = true
 [node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="Place3/StaticBody2D"]
 polygon = PackedVector2Array(-60.190475, -59.428574, -52.190475, -64, 52.571426, -64, 60.190475, -59.047623, 64.000015, -51.428574, 64.000015, 52.952377, 59.047623, 60.190475, 52.952377, 64, -52.190475, 64, -59.428574, 59.809525, -64, 52.190475, -64, -52.190475)
 
-[node name="Actor" parent="." instance=ExtResource("4_u3cyc")]
-position = Vector2(461.99994, 232)
-max_contacts_reported = 3
-
-[node name="Camera2D2" type="Camera2D" parent="Actor"]
-scale = Vector2(1.0000001, 1.0000001)
-ignore_rotation = false
-rotation_smoothing_enabled = true
-rotation_smoothing_speed = 0.5
-metadata/_edit_lock_ = true
-
 [node name="RayCast2D" type="RayCast2D" parent="."]
 position = Vector2(406, 266)
 target_position = Vector2(-53, -84)
@@ -305,23 +289,22 @@ libraries = {
 &"": SubResource("AnimationLibrary_y2354")
 }
 
-[node name="RigidBody2D2" type="RigidBody2D" parent="."]
-position = Vector2(575, 9)
-script = ExtResource("6_y2354")
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="RigidBody2D2"]
-shape = SubResource("CircleShape2D_ni31j")
-
 [node name="CanvasLayer" type="CanvasLayer" parent="."]
 
 [node name="SubViewport" type="SubViewport" parent="."]
 
-[node name="AnimatableBody2D" type="AnimatableBody2D" parent="."]
+[node name="RedPlanet" parent="." instance=ExtResource("5_ni31j")]
 position = Vector2(1940, 437)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="AnimatableBody2D"]
-shape = SubResource("CircleShape2D_xlvrw")
+[node name="CharacterBody2D" parent="." instance=ExtResource("5_xlvrw")]
+position = Vector2(1010, -55)
 
-[node name="MeinPlanet" type="Sprite2D" parent="AnimatableBody2D"]
-scale = Vector2(1.68, 1.68)
-texture = ExtResource("7_ni31j")
+[node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
+ignore_rotation = false
+rotation_smoothing_enabled = true
+rotation_smoothing_speed = 0.5
+script = ExtResource("7_xlvrw")
+metadata/_edit_lock_ = true
+
+[connection signal="parent_found" from="CharacterBody2D" to="." method="_on_character_body_2d_parent_found"]
+[connection signal="parent_lost" from="CharacterBody2D" to="." method="_on_character_body_2d_parent_lost"]

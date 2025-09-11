@@ -1,12 +1,15 @@
-[gd_scene load_steps=3 format=3 uid="uid://dtp43fn7aofrb"]
+[gd_scene load_steps=4 format=3 uid="uid://dtp43fn7aofrb"]
 
 [ext_resource type="Texture2D" uid="uid://cj6i6v7ep4mua" path="res://icon.svg" id="1_1odxm"]
 [ext_resource type="Script" uid="uid://cwigillxieusl" path="res://planet.gd" id="1_mtr83"]
+[ext_resource type="PackedScene" uid="uid://75jb8e4w4h0j" path="res://gravity_area.tscn" id="3_a75xc"]
 
 [node name="Planet" type="RigidBody2D"]
 mass = 1000.0
 can_sleep = false
 script = ExtResource("1_mtr83")
+
+[node name="Gravity" parent="." instance=ExtResource("3_a75xc")]
 
 [node name="Place4" type="Sprite2D" parent="."]
 scale = Vector2(2.625, 2.625)
