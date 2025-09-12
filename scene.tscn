@@ -297,7 +297,7 @@ libraries = {
 position = Vector2(1940, 437)
 
 [node name="CharacterBody2D" parent="." instance=ExtResource("5_xlvrw")]
-position = Vector2(1434, -504)
+position = Vector2(-87, 103)
 
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
 ignore_rotation = false

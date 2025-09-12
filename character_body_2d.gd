@@ -23,13 +23,14 @@ func _physics_process(delta: float) -> void:
 		#do angle correction to gravity direction
 	var gravity_force = Vector2.ZERO
 	var dang = angle_to_angle(global_rotation, gravity_vector_rotation)
+	print(dang, " ", global_rotation, " ", gravity_vector_rotation, " ", global_rotation + dang)
 	if owner_area: #landing mode pritority
 		if abs(dang) > 0.01: #11.4 deg lesser just use physics
 			rotate(dang * delta)
 		var ga_keys: Array = gravity_areas.keys()
 		if len(ga_keys) > 0:
-			gravity_force = Vector2.DOWN.rotated(dang) * ga_keys[0].gravity_power
-	elif gravity_areas: #fly with gravity
+			gravity_force = Vector2.DOWN.rotated(gravity_vector_rotation) * ga_keys[0].gravity_power
+	elif gravity_areas: #fly with gravity mix mplanet gravity
 		for garea in gravity_areas:
 			var nearest_q_len: float = INF
 			var nearest_shape: CollisionShape2D = gravity_areas[garea][0]
@@ -45,9 +46,9 @@ func _physics_process(delta: float) -> void:
 			#TODO: calc gravities  (garea as GravityArea).getch
 
 	#FIXME: fix
-	var force: Vector2 = forward_force + backward_force + up_force + back_force + gravity_force      
+	var force: Vector2 = forward_force + backward_force + up_force + back_force      
 	#print(force)
-	velocity = force.rotated(global_rotation) * delta
+	velocity = (force.rotated(global_rotation) + gravity_force) * delta
 	move_and_slide()
 	
 func _on_area_sendor_area_shape_entered(area_rid: RID, area: Area2D, area_shape_index: int, local_shape_index: int) -> void:
