@@ -25,7 +25,7 @@ var actually_collider_first_idx: int = -1
 @onready var gravity_vector_rotation = 0
 var planet_gravity: float = 100 #TODO: get from planet collider object
 
-var owner_area: OwnerArea = null
+var owner_area: PlanetArea = null
 
 func _ready() -> void:
 	pre_position = global_position
@@ -64,7 +64,7 @@ func _physics_process(delta: float) -> void:
 			#print(self.name, " Colliding  PP ", caster.get_collision_count())
 			for col_idx in range(caster.get_collision_count()):
 				var collider = caster.get_collider(col_idx)
-				if collider == owner_area.get_master():
+				if collider == owner_area.setup.get_master():
 					actually_collider_first_idx = col_idx
 					actually_colliding = true
 					break

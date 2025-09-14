@@ -1,4 +1,4 @@
-[gd_scene load_steps=17 format=3 uid="uid://dkrqw355dj5dq"]
+[gd_scene load_steps=20 format=3 uid="uid://dkrqw355dj5dq"]
 
 [ext_resource type="Script" uid="uid://d1fttd360x0jv" path="res://scene.gd" id="1_m7jmp"]
 [ext_resource type="Texture2D" uid="uid://cj6i6v7ep4mua" path="res://icon.svg" id="1_ulcgi"]
@@ -7,6 +7,9 @@
 [ext_resource type="PackedScene" uid="uid://ccehe80xetj6t" path="res://red_planet.tscn" id="5_ni31j"]
 [ext_resource type="PackedScene" uid="uid://buap177hs2q6p" path="res://character.tscn" id="5_xlvrw"]
 [ext_resource type="Script" uid="uid://d3gnd02cuy60m" path="res://camera_2d.gd" id="7_xlvrw"]
+[ext_resource type="PackedScene" uid="uid://dhrqqo38wiuqi" path="res://pool-manager/Pool2DBasic.tscn" id="8_xlvrw"]
+[ext_resource type="PackedScene" path="res://FractureShard.tscn" id="9_5juve"]
+[ext_resource type="PackedScene" path="res://CutShapeVisualizer.tscn" id="9_73fnb"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nxogm"]
 radius = 18.317427
@@ -99,6 +102,8 @@ _data = {
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_m7jmp")
+
+[node name="CutsParent" type="Node2D" parent="."]
 
 [node name="Place" type="Sprite2D" parent="."]
 position = Vector2(554, 428)
@@ -297,7 +302,7 @@ libraries = {
 position = Vector2(1940, 437)
 
 [node name="CharacterBody2D" parent="." instance=ExtResource("5_xlvrw")]
-position = Vector2(-87, 103)
+position = Vector2(1361, -891)
 
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
 ignore_rotation = false
@@ -305,6 +310,20 @@ rotation_smoothing_enabled = true
 rotation_smoothing_speed = 0.5
 script = ExtResource("7_xlvrw")
 metadata/_edit_lock_ = true
+
+[node name="Pool_FractureShards" parent="." instance=ExtResource("8_xlvrw")]
+placed_in_level = true
+instance_template = ExtResource("9_5juve")
+max_amount = 100
+instantiate_new_on_empty = true
+keep_instances_in_tree = true
+
+[node name="Pool_CutVisualizer" parent="." instance=ExtResource("8_xlvrw")]
+placed_in_level = true
+instance_template = ExtResource("9_73fnb")
+max_amount = 25
+
+[node name="Pool_PointFractureBall" parent="." instance=ExtResource("8_xlvrw")]
 
 [connection signal="parent_found" from="CharacterBody2D" to="." method="_on_character_body_2d_parent_found"]
 [connection signal="parent_lost" from="CharacterBody2D" to="." method="_on_character_body_2d_parent_lost"]

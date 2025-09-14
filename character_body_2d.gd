@@ -12,6 +12,10 @@ var back_force: Vector2 = Vector2.ZERO
 var areas: Array[Area2D] = []
 var gravity_areas: Dictionary = {}
 
+var origin_parent: Node = null
+
+var lock_exit: bool = false #lock exit while reparent
+
 func _ready() -> void:
 	super._ready()
 	
@@ -20,16 +24,26 @@ func angle_to_angle(from, to):
 
 func _physics_process(delta: float) -> void:
 	super._physics_process(delta)
+	if get_parent() is Planet:
+		up_direction = (global_position - get_parent().global_position).normalized()
+	else:
+		up_direction = Vector2.UP.rotated(rotation)
 		#do angle correction to gravity direction
 	var gravity_force = Vector2.ZERO
 	var dang = angle_to_angle(global_rotation, gravity_vector_rotation)
-	print(dang, " ", global_rotation, " ", gravity_vector_rotation, " ", global_rotation + dang)
+	#print(dang, " ", global_rotation, " ", gravity_vector_rotation, " ", global_rotation + dang)
 	if owner_area: #landing mode pritority
 		if abs(dang) > 0.01: #11.4 deg lesser just use physics
 			rotate(dang * delta)
 		var ga_keys: Array = gravity_areas.keys()
 		if len(ga_keys) > 0:
-			gravity_force = Vector2.DOWN.rotated(gravity_vector_rotation) * ga_keys[0].gravity_power
+			if not is_on_wall():
+				gravity_force = Vector2.DOWN.rotated(gravity_vector_rotation) * ga_keys[0].setup.gravity_str
+				#gravity_force = up_direction.rotated(PI) * ga_keys[0].setup.gravity_str
+			else:
+				print("wall")
+			#gravity_force = Vector2.DOWN.rotated(gravity_vector_rotation) * ga_keys[0].setup.gravity_str
+			#print("own:", gravity_force)
 	elif gravity_areas: #fly with gravity mix mplanet gravity
 		for garea in gravity_areas:
 			var nearest_q_len: float = INF
@@ -42,48 +56,92 @@ func _physics_process(delta: float) -> void:
 						nearest_q_len = sq_dist
 						nearest_shape = coll_shape
 			var vec_to_gravity_shape: Vector2 = nearest_shape.global_position - global_position
-			gravity_force += vec_to_gravity_shape.normalized() * (garea as GravityArea).gravity_power
+			gravity_force += vec_to_gravity_shape.normalized() * (garea as PlanetArea).setup.gravity_str
+			#print("gF:", gravity_force)
 			#TODO: calc gravities  (garea as GravityArea).getch
 
 	#FIXME: fix
-	var force: Vector2 = forward_force + backward_force + up_force + back_force      
+	
+	
+	#print(get_parent().name, " ud:", up_direction)
+	var force: Vector2 = (forward_force + backward_force + up_force + back_force)
 	#print(force)
-	velocity = (force.rotated(global_rotation) + gravity_force) * delta
+	var body_dump: float = 2
+	var combined_dump = ProjectSettings.get_setting("physics/2d/default_linear_damp") + body_dump
+	var pps = ProjectSettings.get_setting("physics/common/physics_ticks_per_second")
+	#print("force", gravity_force)
+	#var dvel =  (force.rotated(up_direction.angle() + PI/2) + gravity_force) * delta 
+	var dvel = (force.rotated(global_rotation) + gravity_force) * delta
+	#print("dvel ", dvel, " ", get_slide_collision_count())
+	velocity += dvel
+	velocity *= (1.0 - combined_dump / pps)
+	print("velo: ", velocity)
 	move_and_slide()
+	print("velo2: ", velocity)
 	
 func _on_area_sendor_area_shape_entered(area_rid: RID, area: Area2D, area_shape_index: int, local_shape_index: int) -> void:
-	if area is GravityArea:
-		var owner_id: int = (area as GravityArea).shape_find_owner(area_shape_index)
-		var shape_owner: CollisionShape2D = (area as GravityArea).shape_owner_get_owner(owner_id)
-		gravity_areas[area].append(shape_owner)
+	if area is PlanetArea and area.setup.gravity:
+		var owner_id: int = area.shape_find_owner(area_shape_index)
+		var shape_owner: CollisionShape2D = area.shape_owner_get_owner(owner_id)
+		if not shape_owner in gravity_areas[area]: 
+			gravity_areas[area].append(shape_owner)
 
 func _on_area_sendor_area_shape_exited(area_rid: RID, area: Area2D, area_shape_index: int, local_shape_index: int) -> void:
-	if area is GravityArea and area in gravity_areas:
+	if lock_exit:
+		return
+	if area is PlanetArea and area.setup.gravity and area in gravity_areas:
 		var owner_id: int = (area as GravityArea).shape_find_owner(area_shape_index)
 		var shape_owner: CollisionShape2D = (area as GravityArea).shape_owner_get_owner(owner_id)
 		gravity_areas[area].erase(shape_owner)
 	
+func reparent_push_deffer(master: Node2D):
+	origin_parent = get_parent()
+	lock_exit = true
+	reparent(master)
+	print("reparent ", master)
+	
+func reparent_pop_deffer():
+	lock_exit = true 
+	reparent(origin_parent)
+	origin_parent = null
+	
+	
 func _on_area_sendor_area_entered(area: Area2D) -> void:
-	areas.append(area)
-	if area is OwnerArea:
-		owner_area = area
-		parent_found.emit(area)
-	if area is GravityArea:
-		gravity_areas[area] = []
+	if area in areas:
+		lock_exit = false #unlock enter same area
+		return
+	else:
+		areas.append(area)
+		
+	print("enter area: ", area.name)
+	if area is PlanetArea:
+		var setup = area.setup
+		if setup.parentize_ship:
+			owner_area = area
+			motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
+			call_deferred("reparent_push_deffer", setup.master)
+		if setup.gravity:
+			gravity_areas[area] = []
 
 func _on_area_sendor_area_exited(area: Area2D) -> void:
+	if lock_exit:
+		return
 	areas.erase(area)
-	if area is OwnerArea:
-		owner_area = null
-		parent_lost.emit()
-	if area is GravityArea:
-		gravity_areas.erase(area)
+	print("exit area: ", area.name)
+
+	if area is PlanetArea:
+		if area == owner_area:
+			motion_mode = CharacterBody2D.MOTION_MODE_FLOATING
+			call_deferred("reparent_pop_deffer")
+			owner_area = null
+		if area in gravity_areas:
+			gravity_areas.erase(area)
 
 func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("right"):
 		#physics_material_override.friction = 0.3
 		if owner_area:
-			forward_force = Vector2.RIGHT * 20000
+			forward_force = Vector2.RIGHT * 400
 	if event.is_action_released("right"):
 		#physics_material_override.friction = 1000
 		#if owner_area:
@@ -92,23 +150,23 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("left"):
 		#physics_material_override.friction = 0.3
 		if owner_area:
-			backward_force = Vector2.LEFT * 20000
+			backward_force = Vector2.LEFT * 400
 	if event.is_action_released("left"):
 		#physics_material_override.friction = 1000
 		#if owner_area:
 		backward_force = Vector2.ZERO
 		
 	if event.is_action_pressed("force"):
-		up_force = Vector2.UP * 20000
+		up_force = Vector2.UP * 1200
 	if event.is_action_released("force"):
 		up_force = Vector2.ZERO
 	if event.is_action_pressed("back_force"):
-		back_force = Vector2.DOWN * 15000
+		back_force = Vector2.DOWN * 150
 	if event.is_action_released("back_force"):
 		back_force = Vector2.ZERO
 		
 
 
 func _on_tree_entered() -> void:
-	print(get_parent().name)
+	print("Parent: ", get_parent().name)
 	pass # Replace with function body.

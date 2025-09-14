@@ -1,6 +1,5 @@
-extends Area2D
+extends PlanetArea
 class_name  GravityArea
-
 
 @export var gravity_power: float = 100
 var master: PhysicsBody2D = null
