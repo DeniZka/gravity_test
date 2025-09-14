@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://buap177hs2q6p" path="res://character.tscn" id="5_xlvrw"]
 [ext_resource type="Script" uid="uid://d3gnd02cuy60m" path="res://camera_2d.gd" id="7_xlvrw"]
 [ext_resource type="PackedScene" uid="uid://dhrqqo38wiuqi" path="res://pool-manager/Pool2DBasic.tscn" id="8_xlvrw"]
-[ext_resource type="PackedScene" path="res://FractureShard.tscn" id="9_5juve"]
+[ext_resource type="PackedScene" uid="uid://cmhuraialdsjy" path="res://FractureShard.tscn" id="9_5juve"]
 [ext_resource type="PackedScene" path="res://CutShapeVisualizer.tscn" id="9_73fnb"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nxogm"]

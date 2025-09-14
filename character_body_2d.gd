@@ -1,6 +1,8 @@
 extends FlyingObject
 
 const  ACCELERATION_DUMPING = 0.99
+const ROTATION_BASED = false
+const GRAVITY_BASED = true
 
 signal parent_found(area: Area2D)
 signal parent_lost()
@@ -11,6 +13,7 @@ var up_force: Vector2 = Vector2.ZERO
 var back_force: Vector2 = Vector2.ZERO
 var areas: Array[Area2D] = []
 var gravity_areas: Dictionary = {}
+var behaivor = GRAVITY_BASED
 
 var origin_parent: Node = null
 
@@ -30,7 +33,11 @@ func _physics_process(delta: float) -> void:
 		up_direction = Vector2.UP.rotated(rotation)
 		#do angle correction to gravity direction
 	var gravity_force = Vector2.ZERO
-	var dang = angle_to_angle(global_rotation, gravity_vector_rotation)
+	var dang: float = 0.0
+	if behaivor == GRAVITY_BASED:
+		dang = angle_to_angle(global_rotation, up_direction.angle() + PI/2.0)
+	else:
+		dang = angle_to_angle(global_rotation, gravity_vector_rotation)
 	#print(dang, " ", global_rotation, " ", gravity_vector_rotation, " ", global_rotation + dang)
 	if owner_area: #landing mode pritority
 		if abs(dang) > 0.01: #11.4 deg lesser just use physics
@@ -38,8 +45,10 @@ func _physics_process(delta: float) -> void:
 		var ga_keys: Array = gravity_areas.keys()
 		if len(ga_keys) > 0:
 			if not is_on_wall():
-				gravity_force = Vector2.DOWN.rotated(gravity_vector_rotation) * ga_keys[0].setup.gravity_str
-				#gravity_force = up_direction.rotated(PI) * ga_keys[0].setup.gravity_str
+				if behaivor == GRAVITY_BASED:
+					gravity_force = up_direction.rotated(PI) * ga_keys[0].setup.gravity_str
+				else:
+					gravity_force = Vector2.DOWN.rotated(gravity_vector_rotation) * ga_keys[0].setup.gravity_str  
 			else:
 				print("wall")
 			#gravity_force = Vector2.DOWN.rotated(gravity_vector_rotation) * ga_keys[0].setup.gravity_str
@@ -66,18 +75,22 @@ func _physics_process(delta: float) -> void:
 	#print(get_parent().name, " ud:", up_direction)
 	var force: Vector2 = (forward_force + backward_force + up_force + back_force)
 	#print(force)
-	var body_dump: float = 2
+	var body_dump: float = 2.0
+	if is_on_wall():
+		body_dump = 10.0
+	
 	var combined_dump = ProjectSettings.get_setting("physics/2d/default_linear_damp") + body_dump
 	var pps = ProjectSettings.get_setting("physics/common/physics_ticks_per_second")
 	#print("force", gravity_force)
-	#var dvel =  (force.rotated(up_direction.angle() + PI/2) + gravity_force) * delta 
-	var dvel = (force.rotated(global_rotation) + gravity_force) * delta
-	#print("dvel ", dvel, " ", get_slide_collision_count())
-	velocity += dvel
+	if behaivor == GRAVITY_BASED:
+		velocity += (force.rotated(up_direction.angle() + PI/2) + gravity_force) * delta 
+	else:
+		velocity += (force.rotated(global_rotation) + gravity_force) * delta
+	#dump
 	velocity *= (1.0 - combined_dump / pps)
-	print("velo: ", velocity)
+	#print("velo: ", velocity)
 	move_and_slide()
-	print("velo2: ", velocity)
+	#print("velo2: ", velocity)
 	
 func _on_area_sendor_area_shape_entered(area_rid: RID, area: Area2D, area_shape_index: int, local_shape_index: int) -> void:
 	if area is PlanetArea and area.setup.gravity:

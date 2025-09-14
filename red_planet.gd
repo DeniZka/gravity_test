@@ -17,6 +17,8 @@ class_name Planet
 
 
 func _ready() -> void:
+	_col_polygon2d.polygon = _polygon2d.polygon
+	
 	var childs = get_children()
 	for child in get_children():
 		if child is PlanetArea:

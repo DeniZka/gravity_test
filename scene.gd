@@ -33,8 +33,19 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("test"):
 		var ct: Transform2D = $Cutout.transform
 		ct = ct.scaled(Vector2.ONE * (1/1.7))
-		var dict: Dictionary = polyFracture.cutFracture(planet.get_polygon(), $Cutout.polygon, planet.global_transform,  $Cutout.transform, 0, 0, 0, 0)
-		planet.set_polygon(dict["shapes"][0]['shape'])
+		var cut_fracture_info: Dictionary = polyFracture.cutFracture(planet.get_polygon(), $Cutout.polygon, planet.global_transform,  $Cutout.transform, 0, 0, 0, 0)
+		planet.set_polygon(cut_fracture_info.shapes[0].shape)
+		#var body: RigidShape = rigidbody_template.instantiate()
+		var total_area : float = PolygonLib.getPolygonArea($Cutout.polygon)
+		for fracture in cut_fracture_info.fractures:
+			for fracture_shard in fracture:
+				
+				var area_p : float = fracture_shard.area / total_area
+				var rand_lifetime : float = _rng.randf_range(.1, 1) #+ 2.0 * area_p
+				spawnFractureBody(fracture_shard, planet.getTextureInfo(), 100, rand_lifetime)
+				
+			
+		#body.set_polygon(dict.fractures[0])
 		#print(dict)
 		call_deferred("test")
 	
@@ -100,12 +111,12 @@ func cutSourcePolygons(source, cut_pos : Vector2, cut_shape : PackedVector2Array
 	#instance.setTexture(PolygonLib.setTextureOffset(texture_info, shape_info.centroid))
 
 
-#func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary, new_mass : float, life_time : float) -> void:
-	#var instance = _pool_fracture_shards.getInstance()
-	#if not instance:
-		#return
-	#
-	#var dir : Vector2 = (fracture_shard.spawn_pos - fracture_shard.source_global_trans.get_origin()).normalized()
-	#instance.spawn(fracture_shard.spawn_pos, fracture_shard.spawn_rot, fracture_shard.source_global_trans.get_scale(), life_time)
-	#instance.setPolygon(fracture_shard.centered_shape, _cur_fracture_color, PolygonLib.setTextureOffset(texture_info, fracture_shard.centroid))
-	#instance.setMass(new_mass)
+func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary, new_mass : float, life_time : float) -> void:
+	var instance: FractureShard = _pool_fracture_shards.getInstance()
+	if not instance:
+		return
+	
+	var dir : Vector2 = (fracture_shard.spawn_pos - fracture_shard.source_global_trans.get_origin()).normalized()
+	instance.spawn(fracture_shard.spawn_pos, fracture_shard.spawn_rot, fracture_shard.source_global_trans.get_scale(), life_time)
+	instance.setPolygon(fracture_shard.centered_shape, Color(1,1,1,.7), PolygonLib.setTextureOffset(texture_info, fracture_shard.centroid))
+	instance.setMass(new_mass)
