@@ -11,7 +11,6 @@ class_name Planet
 @export var poly_texture: Texture2D
 
 @onready var _polygon2d := $Polygon2D
-@onready var _line2d := $Polygon2D/Line2D
 @onready var _col_polygon2d := $CollisionPolygon2D
 @onready var _rng := RandomNumberGenerator.new()
 
@@ -53,7 +52,7 @@ func setPolygon(poly : PackedVector2Array) -> void:
 	_polygon2d.set_polygon(poly)
 	_col_polygon2d.set_polygon(poly)
 	poly.append(poly[0])
-	_line2d.points = poly
+	#_line2d.points = poly
 
 
 func setTexture(texture_info : Dictionary) -> void:
@@ -76,3 +75,6 @@ func get_polygon() -> PackedVector2Array:
 
 func set_polygon(poly : PackedVector2Array) -> void:
 	setPolygon(poly)
+	
+func get_shape_transform() -> Transform2D:
+	return _col_polygon2d.global_transform

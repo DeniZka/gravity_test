@@ -325,5 +325,10 @@ max_amount = 25
 
 [node name="Pool_PointFractureBall" parent="." instance=ExtResource("8_xlvrw")]
 
+[node name="Cutout" type="Polygon2D" parent="."]
+modulate = Color(1, 1, 1, 0.101960786)
+position = Vector2(1157, 3)
+polygon = PackedVector2Array(-34, -115, 211, -153, 315, -46, 404, 130, 377, 209, 426, 284, 560, 244, 477, 337, 304, 330, 104, 233, -27, 206, -155, 36)
+
 [connection signal="parent_found" from="CharacterBody2D" to="." method="_on_character_body_2d_parent_found"]
 [connection signal="parent_lost" from="CharacterBody2D" to="." method="_on_character_body_2d_parent_lost"]
