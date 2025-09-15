@@ -45,7 +45,8 @@ func getGlobalRotPolygon() -> float:
 func setPolygon(poly : PackedVector2Array) -> void:
 	_polygon2d.set_polygon(poly)
 	_col_polygon2d.set_polygon(poly)
-	poly.append(poly[0])
+	if poly:
+		poly.append(poly[0])
 	#_line2d.points = poly
 
 
@@ -76,8 +77,11 @@ func get_shape_transform() -> Transform2D:
 	
 func append_strike(strike: StrikeInfo):
 	var cut_fracture_info: Dictionary = polyFracture.cutFracture(self.get_polygon(), strike.poly, self.global_transform,  strike.transform, 0, 0, 0, 0)
-	set_polygon(cut_fracture_info.shapes[0].shape)
-	##var body: RigidShape = rigidbody_template.instantiate()
+	if cut_fracture_info.shapes:
+		set_polygon(cut_fracture_info.shapes[0].shape)
+	else:
+		set_polygon(PackedVector2Array([]))
+	
 	var total_area : float = PolygonLib.getPolygonArea(strike.poly)
 	for fracture in cut_fracture_info.fractures:
 		for fracture_shard in fracture:

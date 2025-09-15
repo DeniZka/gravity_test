@@ -65,7 +65,7 @@ func getInstance():
 	if instances_ready.size() <= 0:
 		if instantiate_new:
 			addSingleInstance()
-			var instance = instances_ready.pop_back()
+			var instance = instances_ready.pop_front()
 			instances_in_use.push_back(instance)
 			if not keep_in_tree:
 				_instance_parent.add_child(instance)
@@ -74,7 +74,7 @@ func getInstance():
 		else:
 			return null
 	else:
-		var instance = instances_ready.pop_back()
+		var instance = instances_ready.pop_front()
 		instances_in_use.push_back(instance)
 		if not keep_in_tree:
 			_instance_parent.add_child(instance)
