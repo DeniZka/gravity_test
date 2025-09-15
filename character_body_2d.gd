@@ -153,10 +153,15 @@ func _input(event: InputEvent) -> void:
 	else:
 		behaivor = GRAVITY_BASED
 		
+	if event.is_action_pressed("up"):
+		up_force = Vector2.UP * 400
+	if event.is_action_released("up"):
+		up_force = Vector2.ZERO
+		
 	if event.is_action_pressed("right"):
 		#physics_material_override.friction = 0.3
-		if owner_area:
-			forward_force = Vector2.RIGHT * 400
+		#if owner_area:
+		forward_force = Vector2.RIGHT * 400
 	if event.is_action_released("right"):
 		#physics_material_override.friction = 1000
 		#if owner_area:
@@ -164,8 +169,8 @@ func _input(event: InputEvent) -> void:
 	
 	if event.is_action_pressed("left"):
 		#physics_material_override.friction = 0.3
-		if owner_area:
-			backward_force = Vector2.LEFT * 400
+		#if owner_area:
+		backward_force = Vector2.LEFT * 400
 	if event.is_action_released("left"):
 		#physics_material_override.friction = 1000
 		#if owner_area:
@@ -176,7 +181,7 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_released("force"):
 		up_force = Vector2.ZERO
 	if event.is_action_pressed("back_force"):
-		back_force = Vector2.DOWN * 1500
+		back_force = Vector2.DOWN * 400
 	if event.is_action_released("back_force"):
 		back_force = Vector2.ZERO
 		

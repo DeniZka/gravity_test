@@ -14,15 +14,21 @@ class_name Planet
 @onready var _col_polygon2d := $CollisionPolygon2D
 @onready var _rng := RandomNumberGenerator.new()
 var core_node: Node2D = null
-@onready var _pool_fracture_shards := $Pool_FractureShards
+
+var _pool_inst: PackedScene = preload("res://pool-manager/Pool2DBasic.tscn")
+var _pool_fracture_shards :PoolBasic = null
 
 @onready var polyFracture := PolygonFracture.new()
 
 
 
 func _ready() -> void:
+	_pool_fracture_shards = _pool_inst.instantiate()
+	add_child(_pool_fracture_shards)
+	
 	_col_polygon2d.polygon = _polygon2d.polygon
-	var core_node = get_node("Core")
+	if has_node("Core"):
+		core_node = get_node("Core")
 	
 	var childs = get_children()
 	for child in get_children():
@@ -62,13 +68,14 @@ func get_polygon() -> PackedVector2Array:
 	return getPolygon()
 
 func set_polygon(poly : PackedVector2Array) -> void:
-	setPolygon(poly)
+	call_deferred("setPolygon", poly)
+	#setPolygon(poly)
 	
 func get_shape_transform() -> Transform2D:
 	return _col_polygon2d.global_transform
 	
 func append_strike(strike: StrikeInfo):
-	var cut_fracture_info: Dictionary = polyFracture.cutFracture(self.get_polygon(), strike.poly, self.global_transform,  Transform2D(), 0, 0, 0, 0)
+	var cut_fracture_info: Dictionary = polyFracture.cutFracture(self.get_polygon(), strike.poly, self.global_transform,  strike.transform, 0, 0, 0, 0)
 	set_polygon(cut_fracture_info.shapes[0].shape)
 	##var body: RigidShape = rigidbody_template.instantiate()
 	var total_area : float = PolygonLib.getPolygonArea(strike.poly)
@@ -77,7 +84,6 @@ func append_strike(strike: StrikeInfo):
 			var area_p : float = fracture_shard.area / total_area
 			var rand_lifetime : float = _rng.randf_range(.1, 1) #+ 2.0 * area_p
 			spawnFractureBody(fracture_shard, self.getTextureInfo(), 100, rand_lifetime)
-	pass
 	
 func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary, new_mass : float, life_time : float) -> void:
 	var instance: FractureShard = _pool_fracture_shards.getInstance()

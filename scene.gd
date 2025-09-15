@@ -9,17 +9,16 @@ extends Node2D
 @onready var _pool_fracture_shards := $Pool_FractureShards
 @onready var _pool_cut_visualizer := $Pool_CutVisualizer
 @onready var _pool_rocket : PoolBasic  = $Pool_Rocket
-@onready var _source_polygon_parent := $SourceParent
 @onready var planet := $RedPlanet
 
 func _ready() -> void:
 	$AnimationPlayer.play("plank")
 	$AnimationPlayer2.play("planet")
-	_pool_rocket.addInstances(10)
+	#_pool_rocket.addInstances(10)
 
 
 func _process(delta: float) -> void:
-	$CanvasLayer/Bg.rotation = -camera.global_rotation
+	$CanvasLayer/Bg.rotation = -camera.get_screen_rotation()
 	$HUD/Speed.text = str("SPD: %0.2f" % player.velocity.length()) 
 
 func _on_character_body_2d_parent_found(area: Area2D) -> void:

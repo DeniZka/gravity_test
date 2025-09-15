@@ -7,7 +7,12 @@
 radius = 3.0
 
 [node name="Rocket" type="RigidBody2D"]
+contact_monitor = true
+max_contacts_reported = 1
 script = ExtResource("1_5gt1y")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_5gt1y")
 
 [node name="Rocket" type="Sprite2D" parent="."]
 position = Vector2(1, 0)
@@ -15,7 +20,11 @@ texture = ExtResource("1_fj03e")
 
 [node name="RayCast2D" type="RayCast2D" parent="Rocket"]
 position = Vector2(-1, 0)
+enabled = false
 target_position = Vector2(5, 0)
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
-shape = SubResource("CircleShape2D_5gt1y")
+[node name="Timer" type="Timer" parent="."]
+wait_time = 10.0
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]
+[connection signal="timeout" from="Timer" to="." method="_on_timer_timeout"]
