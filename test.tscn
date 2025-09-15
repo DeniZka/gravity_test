@@ -1,0 +1,98 @@
+[gd_scene load_steps=10 format=3 uid="uid://lpfiroqc4f64"]
+
+[ext_resource type="Script" uid="uid://dnrrncn11synt" path="res://test.gd" id="1_37kl0"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_mf4mk"]
+radius = 5.0
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_37kl0"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_8uh7m"]
+radius = 19.313208
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_6uqi0"]
+radius = 30.083218
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8uh7m"]
+radius = 9.5
+height = 70.75
+
+[sub_resource type="RectangleShape2D" id="RectangleShape2D_37kl0"]
+size = Vector2(26.935, 19)
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_37kl0"]
+radius = 9.5
+height = 90.05
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_ppyta"]
+
+[node name="Node2D" type="Node2D"]
+script = ExtResource("1_37kl0")
+
+[node name="ShapeCast2D" type="ShapeCast2D" parent="."]
+position = Vector2(86, 57)
+shape = SubResource("CircleShape2D_mf4mk")
+target_position = Vector2(0, 0)
+collide_with_areas = true
+collide_with_bodies = false
+
+[node name="Area2D" type="Area2D" parent="ShapeCast2D"]
+collision_layer = 128
+collision_mask = 128
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="ShapeCast2D/Area2D"]
+shape = SubResource("CircleShape2D_37kl0")
+
+[node name="Area2D" type="Area2D" parent="."]
+position = Vector2(113, 61)
+input_pickable = false
+gravity_space_override = 1
+
+[node name="CollisionShape2D3" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-59, -18)
+shape = SubResource("CircleShape2D_8uh7m")
+
+[node name="CollisionShape2D4" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(71, 44)
+shape = SubResource("CircleShape2D_6uqi0")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(5, -1)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_8uh7m")
+
+[node name="CollisionShape2D6" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(39, -1)
+shape = SubResource("RectangleShape2D_37kl0")
+
+[node name="CollisionShape2D2" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(-44, 26)
+rotation = 3.846003
+shape = SubResource("CapsuleShape2D_37kl0")
+
+[node name="Camera2D" type="Camera2D" parent="Area2D"]
+zoom = Vector2(4.985, 4.985)
+
+[node name="CollisionShape2D5" type="CollisionShape2D" parent="Area2D"]
+
+[node name="Area2D2" type="Area2D" parent="."]
+position = Vector2(66, 100)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Area2D2"]
+shape = SubResource("CircleShape2D_ppyta")
+
+[node name="Line2D" type="Line2D" parent="."]
+points = PackedVector2Array(0, 0, 10, 10)
+width = 1.0
+
+[node name="Line2D2" type="Line2D" parent="."]
+points = PackedVector2Array(35, 127, 93, 61, 170, 61, 177, 60, 183, 57, 189, 51, 192, 40, 193, 31, 196, 18, 195, 10)
+width = 3.0
+default_color = Color(0.5137255, 0.5137255, 0.5137255, 0.47843137)
+joint_mode = 2
+begin_cap_mode = 2
+end_cap_mode = 2
+sharp_limit = 1.0
+round_precision = 6
+
+[connection signal="input_event" from="ShapeCast2D/Area2D" to="." method="_on_area_2d_input_event"]

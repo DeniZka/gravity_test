@@ -151,6 +151,11 @@ func _on_area_sendor_area_exited(area: Area2D) -> void:
 			gravity_areas.erase(area)
 
 func _input(event: InputEvent) -> void:
+	if Input.is_key_pressed(KEY_SHIFT):
+		behaivor = ROTATION_BASED
+	else:
+		behaivor = GRAVITY_BASED
+		
 	if event.is_action_pressed("right"):
 		#physics_material_override.friction = 0.3
 		if owner_area:
