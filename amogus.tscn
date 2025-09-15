@@ -1,0 +1,20 @@
+[gd_scene load_steps=4 format=3 uid="uid://b2uwjewfppb18"]
+
+[ext_resource type="Script" uid="uid://yaka46uyewui" path="res://red_planet.gd" id="1_0syxu"]
+[ext_resource type="Texture2D" uid="uid://d2ih4e85vfueb" path="res://images/suit_owner.png" id="1_2mwk0"]
+[ext_resource type="Texture2D" uid="uid://bm0kxiuqmhu7c" path="res://images/suit.png" id="2_0syxu"]
+
+[node name="Amogus" type="AnimatableBody2D"]
+script = ExtResource("1_0syxu")
+
+[node name="CollisionPolygon2D" type="CollisionPolygon2D" parent="."]
+polygon = PackedVector2Array(-46, -45, -45, -50, -43, -57, -41, -64, -38, -72, -33, -80, -25, -86, -16, -90, -7, -92, 9, -92, 21, -90, 31, -86, 41, -80, 47, -75, 51, -69, 52, -67, 53, -65, 57, -64, 63, -60, 68, -54, 72, -43, 72, -31, 70, -25, 66, -19, 63, -16, 64, 2, 64, 29, 62, 44, 55, 77, 52, 83, 48, 86, 45, 88, 38, 89, 31, 89, 22, 88, 17, 86, 13, 80, 11, 62, 10, 61, 6, 61, 5, 62, 5, 71, 5, 80, 3, 88, 1, 91, -4, 95, -14, 97, -30, 97, -39, 94, -42, 89, -45, 59, -58, 58, -65, 55, -70, 49, -74, 37, -75, 27, -76, 4, -73, -20, -69, -37, -62, -42)
+
+[node name="SuitOwner" type="Sprite2D" parent="."]
+position = Vector2(0, 7)
+texture = ExtResource("1_2mwk0")
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+texture = ExtResource("2_0syxu")
+texture_offset = Vector2(75.965, 92.79)
+polygon = PackedVector2Array(-46, -45, -45, -50, -43, -57, -41, -64, -38, -72, -33, -80, -25, -86, -16, -90, -7, -92, 9, -92, 21, -90, 31, -86, 41, -80, 47, -75, 51, -69, 52, -67, 53, -65, 57, -64, 63, -60, 68, -54, 72, -43, 72, -31, 70, -25, 66, -19, 63, -16, 64, 2, 64, 29, 62, 44, 55, 77, 52, 83, 48, 86, 45, 88, 38, 89, 31, 89, 22, 88, 17, 86, 13, 80, 11, 62, 10, 61, 6, 61, 5, 62, 5, 71, 5, 80, 3, 88, 1, 91, -4, 95, -14, 97, -30, 97, -39, 94, -42, 89, -45, 59, -58, 58, -65, 55, -70, 49, -74, 37, -75, 27, -76, 4, -73, -20, -69, -37, -62, -42)

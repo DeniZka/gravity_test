@@ -1,20 +1,26 @@
 extends Node2D
 
 @onready var player: CharacterBody2D = $CharacterBody2D
+@onready var camera: Camera2D = $CharacterBody2D/Camera2D
 
 @onready var rigidbody_template = preload("res://RigidBody2D.tscn")
 @onready var polyFracture := PolygonFracture.new()
 @onready var _rng := RandomNumberGenerator.new()
 @onready var _pool_fracture_shards := $Pool_FractureShards
 @onready var _pool_cut_visualizer := $Pool_CutVisualizer
-@onready var _pool_point_fracture_ball := $Pool_PointFractureBall
+@onready var _pool_rocket : PoolBasic  = $Pool_Rocket
 @onready var _source_polygon_parent := $SourceParent
 @onready var planet := $RedPlanet
 
 func _ready() -> void:
 	$AnimationPlayer.play("plank")
 	$AnimationPlayer2.play("planet")
+	_pool_rocket.addInstances(10)
 
+
+func _process(delta: float) -> void:
+	$CanvasLayer/Bg.rotation = -camera.global_rotation
+	$HUD/Speed.text = str("SPD: %0.2f" % player.velocity.length()) 
 
 func _on_character_body_2d_parent_found(area: Area2D) -> void:
 	if area is OwnerArea:
@@ -30,9 +36,16 @@ func test():
 	pass
 	
 func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("shoot"):
+		var rocket: Rocket = _pool_rocket.getInstance()
+		if rocket:
+			var dir = (get_local_mouse_position() - player.global_position).normalized()
+			rocket.spawn(player.global_position + dir * 30, dir.angle(), 700)
+		
+		return
 	if event.is_action_pressed("test"):
 		var ct: Transform2D = $Cutout.transform
-		ct = ct.scaled(Vector2.ONE * (1/1.7))
+		#ct = ct.scaled(Vector2.ONE * (1/1.7))
 		var cut_fracture_info: Dictionary = polyFracture.cutFracture(planet.get_polygon(), $Cutout.polygon, planet.global_transform,  $Cutout.transform, 0, 0, 0, 0)
 		planet.set_polygon(cut_fracture_info.shapes[0].shape)
 		#var body: RigidShape = rigidbody_template.instantiate()

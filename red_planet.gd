@@ -13,39 +13,25 @@ class_name Planet
 @onready var _polygon2d := $Polygon2D
 @onready var _col_polygon2d := $CollisionPolygon2D
 @onready var _rng := RandomNumberGenerator.new()
+var core_node: Node2D = null
+@onready var _pool_fracture_shards := $Pool_FractureShards
+
+@onready var polyFracture := PolygonFracture.new()
 
 
 
 func _ready() -> void:
 	_col_polygon2d.polygon = _polygon2d.polygon
+	var core_node = get_node("Core")
 	
 	var childs = get_children()
 	for child in get_children():
 		if child is PlanetArea:
 			child.setup.set_master(self)
-	#$GravityArea.set_master(self)
-	#$OwnerArea.set_master(self)
-	
-	_rng.randomize()
-	if placed_in_level:
-		var poly = PolygonLib.createCirclePolygon(radius, smoothing)
-		setPolygon(poly)
-		
-		#linear_velocity = Vector2.RIGHT.rotated(PI * 2.0 * _rng.randf()) * _rng.randf_range(rand_linear_velocity_range.x, rand_linear_velocity_range.y)
-		
-		_polygon2d.texture = poly_texture
-		
-		
-		if randomize_texture_properties and is_instance_valid(poly_texture):
-			var rand_scale : float = _rng.randf_range(0.25, 0.75)
-			var t_size = poly_texture.get_size() / rand_scale
-			var offset_range = t_size.x * 0.25
-			_polygon2d.texture_offset = (t_size / 2) + Vector2(_rng.randf_range(-offset_range, offset_range), _rng.randf_range(-offset_range, offset_range))
-			_polygon2d.texture_scale = Vector2(rand_scale, rand_scale)*10
-			_polygon2d.texture_rotation = _rng.randf_range(0.0, PI * 2.0)
-			#_polygon2d.texture_offset = Vector2(_rng.randf_range(-500, 500), _rng.randf_range(-500, 500))
 
-
+func _physics_process(delta: float) -> void:
+	if core_node:
+		core_node.rotate(0.01 * delta)
 
 func getGlobalRotPolygon() -> float:
 	return _polygon2d.global_rotation
@@ -80,3 +66,25 @@ func set_polygon(poly : PackedVector2Array) -> void:
 	
 func get_shape_transform() -> Transform2D:
 	return _col_polygon2d.global_transform
+	
+func append_strike(strike: StrikeInfo):
+	var cut_fracture_info: Dictionary = polyFracture.cutFracture(self.get_polygon(), strike.poly, self.global_transform,  Transform2D(), 0, 0, 0, 0)
+	set_polygon(cut_fracture_info.shapes[0].shape)
+	##var body: RigidShape = rigidbody_template.instantiate()
+	var total_area : float = PolygonLib.getPolygonArea(strike.poly)
+	for fracture in cut_fracture_info.fractures:
+		for fracture_shard in fracture:
+			var area_p : float = fracture_shard.area / total_area
+			var rand_lifetime : float = _rng.randf_range(.1, 1) #+ 2.0 * area_p
+			spawnFractureBody(fracture_shard, self.getTextureInfo(), 100, rand_lifetime)
+	pass
+	
+func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary, new_mass : float, life_time : float) -> void:
+	var instance: FractureShard = _pool_fracture_shards.getInstance()
+	if not instance:
+		return
+	
+	var dir : Vector2 = (fracture_shard.spawn_pos - fracture_shard.source_global_trans.get_origin()).normalized()
+	instance.spawn(fracture_shard.spawn_pos, fracture_shard.spawn_rot, fracture_shard.source_global_trans.get_scale(), life_time)
+	instance.setPolygon(fracture_shard.centered_shape, Color(1,1,1,.7), PolygonLib.setTextureOffset(texture_info, fracture_shard.centroid))
+	instance.setMass(new_mass)

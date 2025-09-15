@@ -1,7 +1,8 @@
-[gd_scene load_steps=20 format=3 uid="uid://dkrqw355dj5dq"]
+[gd_scene load_steps=23 format=3 uid="uid://dkrqw355dj5dq"]
 
 [ext_resource type="Script" uid="uid://d1fttd360x0jv" path="res://scene.gd" id="1_m7jmp"]
 [ext_resource type="Texture2D" uid="uid://cj6i6v7ep4mua" path="res://icon.svg" id="1_ulcgi"]
+[ext_resource type="Texture2D" uid="uid://4rltp373nh24" path="res://images/bg.jpg" id="2_5c1cw"]
 [ext_resource type="PackedScene" uid="uid://dtp43fn7aofrb" path="res://planet.tscn" id="2_3253y"]
 [ext_resource type="Script" uid="uid://dve55gxvicm7k" path="res://moon.gd" id="3_u3cyc"]
 [ext_resource type="PackedScene" uid="uid://ccehe80xetj6t" path="res://red_planet.tscn" id="5_ni31j"]
@@ -10,6 +11,8 @@
 [ext_resource type="PackedScene" uid="uid://dhrqqo38wiuqi" path="res://pool-manager/Pool2DBasic.tscn" id="8_xlvrw"]
 [ext_resource type="PackedScene" uid="uid://cmhuraialdsjy" path="res://FractureShard.tscn" id="9_5juve"]
 [ext_resource type="PackedScene" path="res://CutShapeVisualizer.tscn" id="9_73fnb"]
+[ext_resource type="PackedScene" uid="uid://b2uwjewfppb18" path="res://amogus.tscn" id="12_akxrc"]
+[ext_resource type="PackedScene" uid="uid://bduuaa41aj20f" path="res://rocket.tscn" id="13_akxrc"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nxogm"]
 radius = 18.317427
@@ -102,6 +105,16 @@ _data = {
 
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_m7jmp")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+layer = -1
+
+[node name="Bg" type="Sprite2D" parent="CanvasLayer"]
+modulate = Color(0.28, 0.28, 0.28, 1)
+z_index = -1
+position = Vector2(577, 326)
+scale = Vector2(1.3, 1.3)
+texture = ExtResource("2_5c1cw")
 
 [node name="CutsParent" type="Node2D" parent="."]
 
@@ -294,15 +307,18 @@ libraries = {
 &"": SubResource("AnimationLibrary_y2354")
 }
 
-[node name="CanvasLayer" type="CanvasLayer" parent="."]
-
 [node name="SubViewport" type="SubViewport" parent="."]
 
 [node name="RedPlanet" parent="." instance=ExtResource("5_ni31j")]
 position = Vector2(1940, 437)
+rand_linear_velocity_range = Vector2(750, 1000)
+radius = 250.0
+smoothing = 1
+placed_in_level = false
+randomize_texture_properties = true
 
 [node name="CharacterBody2D" parent="." instance=ExtResource("5_xlvrw")]
-position = Vector2(1361, -891)
+position = Vector2(396, -489)
 
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
 ignore_rotation = false
@@ -323,12 +339,27 @@ placed_in_level = true
 instance_template = ExtResource("9_73fnb")
 max_amount = 25
 
-[node name="Pool_PointFractureBall" parent="." instance=ExtResource("8_xlvrw")]
+[node name="Pool_Rocket" parent="." instance=ExtResource("8_xlvrw")]
+placed_in_level = true
+instance_template = ExtResource("13_akxrc")
+max_amount = 9
 
 [node name="Cutout" type="Polygon2D" parent="."]
 modulate = Color(1, 1, 1, 0.101960786)
-position = Vector2(1157, 3)
+position = Vector2(975, 3)
 polygon = PackedVector2Array(-34, -115, 211, -153, 315, -46, 404, 130, 377, 209, 426, 284, 560, 244, 477, 337, 304, 330, 104, 233, -27, 206, -155, 36)
+
+[node name="Amogus" parent="." instance=ExtResource("12_akxrc")]
+position = Vector2(3709, -215)
+
+[node name="HUD" type="CanvasLayer" parent="."]
+
+[node name="Speed" type="Label" parent="HUD"]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Rocket" parent="." instance=ExtResource("13_akxrc")]
+position = Vector2(495, -443)
 
 [connection signal="parent_found" from="CharacterBody2D" to="." method="_on_character_body_2d_parent_found"]
 [connection signal="parent_lost" from="CharacterBody2D" to="." method="_on_character_body_2d_parent_lost"]

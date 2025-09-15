@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://lpfiroqc4f64"]
+[gd_scene load_steps=11 format=3 uid="uid://lpfiroqc4f64"]
 
 [ext_resource type="Script" uid="uid://dnrrncn11synt" path="res://test.gd" id="1_37kl0"]
 
@@ -16,6 +16,10 @@ radius = 30.083218
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_8uh7m"]
 radius = 9.5
 height = 70.75
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_6uqi0"]
+radius = 9.5
+height = 31.74
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_37kl0"]
 size = Vector2(26.935, 19)
@@ -62,7 +66,36 @@ rotation = 1.5707964
 shape = SubResource("CapsuleShape2D_8uh7m")
 
 [node name="CollisionShape2D6" type="CollisionShape2D" parent="Area2D"]
-position = Vector2(39, -1)
+position = Vector2(37, -1)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_6uqi0")
+
+[node name="CollisionShape2D7" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(50, -1)
+rotation = 1.5707964
+shape = SubResource("CapsuleShape2D_6uqi0")
+
+[node name="CollisionShape2D8" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(63, -2)
+rotation = 1.3960499
+shape = SubResource("CapsuleShape2D_6uqi0")
+
+[node name="CollisionShape2D9" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(74, -7)
+rotation = 0.8450084
+shape = SubResource("CapsuleShape2D_6uqi0")
+
+[node name="CollisionShape2D10" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(81, -18)
+rotation = 0.2667153
+shape = SubResource("CapsuleShape2D_6uqi0")
+
+[node name="Rect" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(14, 44)
+shape = SubResource("RectangleShape2D_37kl0")
+
+[node name="Rect2" type="CollisionShape2D" parent="Area2D"]
+position = Vector2(35, 44)
 shape = SubResource("RectangleShape2D_37kl0")
 
 [node name="CollisionShape2D2" type="CollisionShape2D" parent="Area2D"]

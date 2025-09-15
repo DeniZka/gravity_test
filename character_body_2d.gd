@@ -49,10 +49,7 @@ func _physics_process(delta: float) -> void:
 					gravity_force = up_direction.rotated(PI) * ga_keys[0].setup.gravity_str
 				else:
 					gravity_force = Vector2.DOWN.rotated(gravity_vector_rotation) * ga_keys[0].setup.gravity_str  
-			else:
-				print("wall")
-			#gravity_force = Vector2.DOWN.rotated(gravity_vector_rotation) * ga_keys[0].setup.gravity_str
-			#print("own:", gravity_force)
+			#print("own:", gravity_force)ataaa
 	elif gravity_areas: #fly with gravity mix mplanet gravity
 		for garea in gravity_areas:
 			var nearest_q_len: float = INF
@@ -179,7 +176,7 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_released("force"):
 		up_force = Vector2.ZERO
 	if event.is_action_pressed("back_force"):
-		back_force = Vector2.DOWN * 150
+		back_force = Vector2.DOWN * 1500
 	if event.is_action_released("back_force"):
 		back_force = Vector2.ZERO
 		

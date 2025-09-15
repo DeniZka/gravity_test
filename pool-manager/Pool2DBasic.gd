@@ -1,4 +1,5 @@
 extends Node
+class_name PoolBasic
 
 #!!!----All pooled instances need these 2 things----!!!
 #func despawn() -> called when instance is finished
