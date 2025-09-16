@@ -3,9 +3,26 @@ class_name Rocket
 
 signal Despawn(ref)
 
+const MODE_PROJECTILE = "Projectile"
+const MODE_ITEM = "Item"
+
 var angle: float = 0
 @onready var ray: RayCast2D = $Rocket/RayCast2D
 @onready var _timer: Timer = $Timer
+@export_enum("Projectile", "Item") var mode: String = MODE_PROJECTILE:
+	set(val):
+		mode = val
+		if val == MODE_PROJECTILE:
+			collision_layer = 1
+			collision_mask = 1
+			linear_damp = 0.0
+		else:
+			collision_layer = 0
+			collision_mask = 0
+			linear_damp = 1.0
+			set_collision_layer_value(5, true)
+			set_collision_mask_value(4, true)
+		
 @export var strike: StrikeInfo = null
 
 func _ready() -> void:
@@ -16,11 +33,11 @@ func _ready() -> void:
 	var pf = PolygonFracture.new(Time.get_ticks_usec())
 	strike.poly = pf.generateRandomPolygon(strike.size, Vector2.ONE * 40)
 
-func spawn(pos : Vector2, rot : float, force: float) -> void:
+func spawn(pos : Vector2, rot : float, initial_vel: float) -> void:
 	visible = true
 	global_position = pos
 	global_rotation = rot
-	strike.force = force
+	linear_velocity = Vector2.RIGHT.rotated(rot) * initial_vel
 	set_process(true)
 	set_physics_process(true)
 	collision_layer = 1
@@ -49,6 +66,7 @@ func _on_body_entered(body: Node) -> void:
 		strike.transform = Transform2D(0, global_position)
 		body.append_strike(strike)
 		Despawn.emit(self)
+	print(body)
 
 
 func _on_timer_timeout() -> void:

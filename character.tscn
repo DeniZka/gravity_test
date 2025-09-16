@@ -3,14 +3,18 @@
 [ext_resource type="Script" uid="uid://cjat3bbn4qvqs" path="res://character_body_2d.gd" id="1_pjt0s"]
 [ext_resource type="Texture2D" uid="uid://cj6i6v7ep4mua" path="res://icon.svg" id="2_wa5vi"]
 [ext_resource type="Texture2D" uid="uid://k4kx0m2e5wym" path="res://spaceship.png" id="3_wa5vi"]
-[ext_resource type="PackedScene" uid="uid://dhrqqo38wiuqi" path="res://pool-manager/Pool2DBasic.tscn" id="4_px5sl"]
-[ext_resource type="PackedScene" uid="uid://bduuaa41aj20f" path="res://rocket.tscn" id="5_0qfo5"]
 
 [sub_resource type="CapsuleShape2D" id="CapsuleShape2D_ni31j"]
 radius = 15.0
 height = 34.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_73fnb"]
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_px5sl"]
+radius = 126.01587
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_0qfo5"]
+radius = 14.035668
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 motion_mode = 1
@@ -36,13 +40,26 @@ shape = SubResource("CircleShape2D_73fnb")
 scale = Vector2(0.055, 0.055)
 texture = ExtResource("3_wa5vi")
 
-[node name="Pool_Rocket" parent="." instance=ExtResource("4_px5sl")]
-placed_in_level = true
-instance_template = ExtResource("5_0qfo5")
-max_amount = 5
+[node name="Magnet" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 16
+gravity_space_override = 1
+gravity_point = true
+gravity = 200.0
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Magnet"]
+shape = SubResource("CircleShape2D_px5sl")
+
+[node name="Dock" type="Area2D" parent="."]
+collision_layer = 8
+collision_mask = 16
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="Dock"]
+shape = SubResource("CircleShape2D_0qfo5")
 
 [connection signal="tree_entered" from="." to="." method="_on_tree_entered"]
 [connection signal="area_entered" from="AreaSendor" to="." method="_on_area_sendor_area_entered"]
 [connection signal="area_exited" from="AreaSendor" to="." method="_on_area_sendor_area_exited"]
 [connection signal="area_shape_entered" from="AreaSendor" to="." method="_on_area_sendor_area_shape_entered"]
 [connection signal="area_shape_exited" from="AreaSendor" to="." method="_on_area_sendor_area_shape_exited"]
+[connection signal="body_entered" from="Dock" to="." method="_on_dock_body_entered"]

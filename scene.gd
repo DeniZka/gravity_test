@@ -1,6 +1,6 @@
 extends Node2D
 
-@onready var player: CharacterBody2D = $CharacterBody2D
+@onready var player: Ship = $CharacterBody2D
 @onready var camera: Camera2D = $CharacterBody2D/Camera2D
 
 @onready var rigidbody_template = preload("res://RigidBody2D.tscn")
@@ -8,11 +8,18 @@ extends Node2D
 @onready var _rng := RandomNumberGenerator.new()
 @onready var _pool_fracture_shards := $Pool_FractureShards
 @onready var _pool_cut_visualizer := $Pool_CutVisualizer
+@onready var _pool_rocket : PoolBasic  = $Pool_Rocket
 @onready var planet := $RedPlanet
 
 func _ready() -> void:
 	$AnimationPlayer.play("plank")
 	$AnimationPlayer2.play("planet")
+	player.spawn_projectile.connect(self.on_player_spawn_projectile)
+	
+func on_player_spawn_projectile(pos: Vector2, rot: float, vel: float):
+	var rocket: Rocket = _pool_rocket.getInstance()
+	if rocket:
+		rocket.spawn(pos, rot, vel)
 
 func _process(delta: float) -> void:
 	$CanvasLayer/Bg.rotation = -camera.get_screen_rotation()

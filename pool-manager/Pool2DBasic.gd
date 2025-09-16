@@ -6,8 +6,6 @@ class_name PoolBasic
 #signal Despawn(self) -> instance emits this signal when finished to let the pool know to despawn it
 #-----------------------------------------------------
 
-
-
 #if pool is added to scene tree from the editor use this or setup the pool via code later
 @export var placed_in_level: bool = false
 @export var instance_template: PackedScene
@@ -149,7 +147,8 @@ func removeInstances(amount : int) -> void:
 			return
 
 
-
+func def_remove_child(instanse: Node):
+	_instance_parent.remove_child(instanse)
 
 
 func On_Instance_Despawn(instance) -> void:
@@ -171,4 +170,4 @@ func On_Instance_Despawn(instance) -> void:
 				instance.despawn()
 			
 			if not keep_in_tree:
-				_instance_parent.remove_child(instance)
+				call_deferred("def_remove_child", instance)

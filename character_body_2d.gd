@@ -1,11 +1,17 @@
 extends FlyingObject
+class_name Ship
 
 const  ACCELERATION_DUMPING = 0.99
 const ROTATION_BASED = false
 const GRAVITY_BASED = true
 
-signal parent_found(area: Area2D)
-signal parent_lost()
+const WEAPON_BLASTER = 0
+const WEAPON_ROCKET_LOUNCHER = 1
+const WEAPON_LASER = 3
+
+signal spawn_projectile(pos: Vector2, angle: float, vel: float)
+signal start_hitscan()
+
 
 var forward_force: Vector2 = Vector2.ZERO
 var backward_force: Vector2 = Vector2.ZERO
@@ -14,7 +20,7 @@ var back_force: Vector2 = Vector2.ZERO
 var areas: Array[Area2D] = []
 var gravity_areas: Dictionary = {}
 var behaivor = GRAVITY_BASED
-@onready var _pool_rocket : PoolBasic  = $Pool_Rocket
+var sel_weapon: int = WEAPON_BLASTER
 
 var origin_parent: Node = null
 
@@ -22,6 +28,7 @@ var lock_exit: bool = false #lock exit while reparent
 
 func _ready() -> void:
 	super._ready()
+	$Magnet/CollisionShape2D.disabled = true
 	
 func angle_to_angle(from, to):
 	return fposmod(to-from + PI, PI*2) - PI
@@ -154,11 +161,22 @@ func _input(event: InputEvent) -> void:
 	else:
 		behaivor = GRAVITY_BASED
 		
+	if event.is_action_pressed("weapon_1"):
+		sel_weapon = WEAPON_LASER
+	if event.is_action_pressed("weapon_2"):
+		sel_weapon = WEAPON_BLASTER
+	if event.is_action_pressed("weapon_3"):
+		sel_weapon = WEAPON_ROCKET_LOUNCHER
+		
+	if event.is_action_pressed("magnet"):
+		$Magnet/CollisionShape2D.disabled = false
+	if event.is_action_released("magnet"):
+		$Magnet/CollisionShape2D.disabled = true
+		
 	if event.is_action_pressed("shoot"):
-		var rocket: Rocket = _pool_rocket.getInstance()
-		if rocket:
-			var dir = (get_global_mouse_position() - global_position).normalized()
-			rocket.spawn(global_position + dir * 30, dir.angle(), 700)
+		var dir = (get_global_mouse_position() - global_position).normalized()
+		spawn_projectile.emit(global_position + dir * 30, dir.angle(), velocity.length())
+
 		
 	if event.is_action_pressed("up"):
 		up_force = Vector2.UP * 400
@@ -197,3 +215,8 @@ func _input(event: InputEvent) -> void:
 func _on_tree_entered() -> void:
 	print("Parent: ", get_parent().name)
 	pass # Replace with function body.
+
+
+func _on_dock_body_entered(body: Node2D) -> void:
+	if body is Rocket:
+		body.queue_free()

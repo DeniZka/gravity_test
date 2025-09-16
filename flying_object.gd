@@ -114,7 +114,12 @@ func _physics_process(delta: float) -> void:
 		if stay_same_state_times >= MAX_SHAPE_CAST_MISS_TIME:
 			shape_cast_step = shape_cast_step * 2.0
 			stay_same_state_times = 0
-		(caster.shape as CircleShape2D).radius += shape_cast_step
+		var radius = (caster.shape as CircleShape2D).radius + shape_cast_step
+		if radius < 0:
+			caster.shape.radius = 0.001
+		else:
+			caster.shape.radius = radius
+		
 		stay_same_state_times += 1
 	
 	

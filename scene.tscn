@@ -1,4 +1,4 @@
-[gd_scene load_steps=22 format=3 uid="uid://dkrqw355dj5dq"]
+[gd_scene load_steps=23 format=3 uid="uid://dkrqw355dj5dq"]
 
 [ext_resource type="Script" uid="uid://d1fttd360x0jv" path="res://scene.gd" id="1_m7jmp"]
 [ext_resource type="Texture2D" uid="uid://cj6i6v7ep4mua" path="res://icon.svg" id="1_ulcgi"]
@@ -7,6 +7,7 @@
 [ext_resource type="Script" uid="uid://dve55gxvicm7k" path="res://moon.gd" id="3_u3cyc"]
 [ext_resource type="PackedScene" uid="uid://ccehe80xetj6t" path="res://red_planet.tscn" id="5_ni31j"]
 [ext_resource type="PackedScene" uid="uid://buap177hs2q6p" path="res://character.tscn" id="5_xlvrw"]
+[ext_resource type="PackedScene" uid="uid://bduuaa41aj20f" path="res://rocket.tscn" id="7_akxrc"]
 [ext_resource type="Script" uid="uid://d3gnd02cuy60m" path="res://camera_2d.gd" id="7_xlvrw"]
 [ext_resource type="PackedScene" uid="uid://dhrqqo38wiuqi" path="res://pool-manager/Pool2DBasic.tscn" id="8_xlvrw"]
 [ext_resource type="PackedScene" uid="uid://cmhuraialdsjy" path="res://FractureShard.tscn" id="9_5juve"]
@@ -311,6 +312,10 @@ libraries = {
 [node name="RedPlanet" parent="." instance=ExtResource("5_ni31j")]
 position = Vector2(1940, 437)
 
+[node name="Rocket" parent="." instance=ExtResource("7_akxrc")]
+position = Vector2(546, -482)
+mode = "Item"
+
 [node name="CharacterBody2D" parent="." instance=ExtResource("5_xlvrw")]
 position = Vector2(487, -474)
 
@@ -327,6 +332,11 @@ instance_template = ExtResource("9_5juve")
 max_amount = 100
 instantiate_new_on_empty = true
 keep_instances_in_tree = true
+
+[node name="Pool_Rocket" parent="." instance=ExtResource("8_xlvrw")]
+placed_in_level = true
+instance_template = ExtResource("7_akxrc")
+max_amount = 5
 
 [node name="Pool_CutVisualizer" parent="." instance=ExtResource("8_xlvrw")]
 placed_in_level = true
@@ -346,6 +356,3 @@ position = Vector2(171, -416)
 [node name="Speed" type="Label" parent="HUD"]
 offset_right = 40.0
 offset_bottom = 23.0
-
-[connection signal="parent_found" from="CharacterBody2D" to="." method="_on_character_body_2d_parent_found"]
-[connection signal="parent_lost" from="CharacterBody2D" to="." method="_on_character_body_2d_parent_lost"]
