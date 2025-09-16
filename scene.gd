@@ -8,14 +8,11 @@ extends Node2D
 @onready var _rng := RandomNumberGenerator.new()
 @onready var _pool_fracture_shards := $Pool_FractureShards
 @onready var _pool_cut_visualizer := $Pool_CutVisualizer
-@onready var _pool_rocket : PoolBasic  = $Pool_Rocket
 @onready var planet := $RedPlanet
 
 func _ready() -> void:
 	$AnimationPlayer.play("plank")
 	$AnimationPlayer2.play("planet")
-	#_pool_rocket.addInstances(10)
-
 
 func _process(delta: float) -> void:
 	$CanvasLayer/Bg.rotation = -camera.get_screen_rotation()
@@ -35,13 +32,6 @@ func test():
 	pass
 	
 func _input(event: InputEvent) -> void:
-	if event.is_action_pressed("shoot"):
-		var rocket: Rocket = _pool_rocket.getInstance()
-		if rocket:
-			var dir = (get_local_mouse_position() - player.global_position).normalized()
-			rocket.spawn(player.global_position + dir * 30, dir.angle(), 700)
-		
-		return
 	if event.is_action_pressed("test"):
 		var ct: Transform2D = $Cutout.transform
 		#ct = ct.scaled(Vector2.ONE * (1/1.7))

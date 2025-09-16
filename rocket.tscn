@@ -1,7 +1,14 @@
-[gd_scene load_steps=4 format=3 uid="uid://bduuaa41aj20f"]
+[gd_scene load_steps=6 format=3 uid="uid://bduuaa41aj20f"]
 
 [ext_resource type="Script" uid="uid://dslffcswncaka" path="res://rocket.gd" id="1_5gt1y"]
 [ext_resource type="Texture2D" uid="uid://crv4qfjv5l8ap" path="res://images/projectiles/rocket.png" id="1_fj03e"]
+[ext_resource type="Script" uid="uid://ljg1ctdjamhh" path="res://strike_info.gd" id="2_r2l15"]
+
+[sub_resource type="Resource" id="Resource_tpb7v"]
+script = ExtResource("2_r2l15")
+size = Vector2(30, 30)
+force = 700.0
+metadata/_custom_type_script = "uid://ljg1ctdjamhh"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_5gt1y"]
 radius = 3.0
@@ -10,6 +17,7 @@ radius = 3.0
 contact_monitor = true
 max_contacts_reported = 1
 script = ExtResource("1_5gt1y")
+strike = SubResource("Resource_tpb7v")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="."]
 shape = SubResource("CircleShape2D_5gt1y")

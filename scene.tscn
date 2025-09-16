@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://dkrqw355dj5dq"]
+[gd_scene load_steps=22 format=3 uid="uid://dkrqw355dj5dq"]
 
 [ext_resource type="Script" uid="uid://d1fttd360x0jv" path="res://scene.gd" id="1_m7jmp"]
 [ext_resource type="Texture2D" uid="uid://cj6i6v7ep4mua" path="res://icon.svg" id="1_ulcgi"]
@@ -12,7 +12,6 @@
 [ext_resource type="PackedScene" uid="uid://cmhuraialdsjy" path="res://FractureShard.tscn" id="9_5juve"]
 [ext_resource type="PackedScene" path="res://CutShapeVisualizer.tscn" id="9_73fnb"]
 [ext_resource type="PackedScene" uid="uid://b2uwjewfppb18" path="res://amogus.tscn" id="12_akxrc"]
-[ext_resource type="PackedScene" uid="uid://bduuaa41aj20f" path="res://rocket.tscn" id="13_akxrc"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nxogm"]
 radius = 18.317427
@@ -333,11 +332,6 @@ keep_instances_in_tree = true
 placed_in_level = true
 instance_template = ExtResource("9_73fnb")
 max_amount = 25
-
-[node name="Pool_Rocket" parent="." instance=ExtResource("8_xlvrw")]
-placed_in_level = true
-instance_template = ExtResource("13_akxrc")
-max_amount = 5
 
 [node name="Cutout" type="Polygon2D" parent="."]
 modulate = Color(1, 1, 1, 0.101960786)

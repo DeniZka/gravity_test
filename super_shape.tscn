@@ -1,0 +1,88 @@
+[gd_scene load_steps=3 format=3 uid="uid://bgc0jfqoqvprn"]
+
+[ext_resource type="Script" uid="uid://cs261t7m0pjol" path="res://super_shape.gd" id="1_w7g7n"]
+[ext_resource type="Script" uid="uid://d3gnd02cuy60m" path="res://camera_2d.gd" id="2_h6ff7"]
+
+[node name="SuperShape" type="Node2D"]
+script = ExtResource("1_w7g7n")
+
+[node name="Shape" type="Polygon2D" parent="."]
+position = Vector2(553, 303)
+
+[node name="Line2D" type="Line2D" parent="Shape"]
+closed = true
+width = 1.0
+default_color = Color(1, 0.69, 0.69, 1)
+
+[node name="Camera2D" type="Camera2D" parent="Shape"]
+script = ExtResource("2_h6ff7")
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="Panel" type="Panel" parent="CanvasLayer"]
+offset_right = 720.0
+offset_bottom = 51.0
+
+[node name="HBoxContainer" type="HBoxContainer" parent="CanvasLayer/Panel"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+alignment = 1
+
+[node name="pnum" type="SpinBox" parent="CanvasLayer/Panel/HBoxContainer"]
+layout_mode = 2
+max_value = 10000.0
+value = 100.0
+rounded = true
+
+[node name="a" type="SpinBox" parent="CanvasLayer/Panel/HBoxContainer"]
+layout_mode = 2
+step = 0.1
+
+[node name="b" type="SpinBox" parent="CanvasLayer/Panel/HBoxContainer"]
+layout_mode = 2
+step = 0.1
+
+[node name="m" type="SpinBox" parent="CanvasLayer/Panel/HBoxContainer"]
+layout_mode = 2
+step = 0.1
+
+[node name="n1" type="SpinBox" parent="CanvasLayer/Panel/HBoxContainer"]
+layout_mode = 2
+step = 0.1
+
+[node name="n2" type="SpinBox" parent="CanvasLayer/Panel/HBoxContainer"]
+layout_mode = 2
+step = 0.1
+
+[node name="n3" type="SpinBox" parent="CanvasLayer/Panel/HBoxContainer"]
+layout_mode = 2
+step = 0.1
+
+[connection signal="mouse_entered" from="CanvasLayer/Panel" to="." method="_on_panel_mouse_entered"]
+[connection signal="mouse_exited" from="CanvasLayer/Panel" to="." method="_on_panel_mouse_exited"]
+[connection signal="changed" from="CanvasLayer/Panel/HBoxContainer/pnum" to="." method="_on_pnum_changed"]
+[connection signal="focus_entered" from="CanvasLayer/Panel/HBoxContainer/pnum" to="." method="_on_panel_mouse_entered"]
+[connection signal="focus_exited" from="CanvasLayer/Panel/HBoxContainer/pnum" to="." method="_on_panel_mouse_exited"]
+[connection signal="value_changed" from="CanvasLayer/Panel/HBoxContainer/pnum" to="." method="_on_pnum_value_changed"]
+[connection signal="focus_entered" from="CanvasLayer/Panel/HBoxContainer/a" to="." method="_on_panel_mouse_entered"]
+[connection signal="focus_exited" from="CanvasLayer/Panel/HBoxContainer/a" to="." method="_on_panel_mouse_exited"]
+[connection signal="value_changed" from="CanvasLayer/Panel/HBoxContainer/a" to="." method="_on_pnum_value_changed"]
+[connection signal="focus_entered" from="CanvasLayer/Panel/HBoxContainer/b" to="." method="_on_panel_mouse_entered"]
+[connection signal="focus_exited" from="CanvasLayer/Panel/HBoxContainer/b" to="." method="_on_panel_mouse_exited"]
+[connection signal="value_changed" from="CanvasLayer/Panel/HBoxContainer/b" to="." method="_on_pnum_value_changed"]
+[connection signal="focus_entered" from="CanvasLayer/Panel/HBoxContainer/m" to="." method="_on_panel_mouse_entered"]
+[connection signal="focus_exited" from="CanvasLayer/Panel/HBoxContainer/m" to="." method="_on_panel_mouse_exited"]
+[connection signal="value_changed" from="CanvasLayer/Panel/HBoxContainer/m" to="." method="_on_pnum_value_changed"]
+[connection signal="focus_entered" from="CanvasLayer/Panel/HBoxContainer/n1" to="." method="_on_panel_mouse_entered"]
+[connection signal="focus_exited" from="CanvasLayer/Panel/HBoxContainer/n1" to="." method="_on_panel_mouse_exited"]
+[connection signal="value_changed" from="CanvasLayer/Panel/HBoxContainer/n1" to="." method="_on_pnum_value_changed"]
+[connection signal="focus_entered" from="CanvasLayer/Panel/HBoxContainer/n2" to="." method="_on_panel_mouse_entered"]
+[connection signal="focus_exited" from="CanvasLayer/Panel/HBoxContainer/n2" to="." method="_on_panel_mouse_exited"]
+[connection signal="value_changed" from="CanvasLayer/Panel/HBoxContainer/n2" to="." method="_on_pnum_value_changed"]
+[connection signal="focus_entered" from="CanvasLayer/Panel/HBoxContainer/n3" to="." method="_on_panel_mouse_entered"]
+[connection signal="focus_exited" from="CanvasLayer/Panel/HBoxContainer/n3" to="." method="_on_panel_mouse_exited"]
+[connection signal="value_changed" from="CanvasLayer/Panel/HBoxContainer/n3" to="." method="_on_pnum_value_changed"]

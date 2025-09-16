@@ -14,6 +14,7 @@ var back_force: Vector2 = Vector2.ZERO
 var areas: Array[Area2D] = []
 var gravity_areas: Dictionary = {}
 var behaivor = GRAVITY_BASED
+@onready var _pool_rocket : PoolBasic  = $Pool_Rocket
 
 var origin_parent: Node = null
 
@@ -152,6 +153,12 @@ func _input(event: InputEvent) -> void:
 		behaivor = ROTATION_BASED
 	else:
 		behaivor = GRAVITY_BASED
+		
+	if event.is_action_pressed("shoot"):
+		var rocket: Rocket = _pool_rocket.getInstance()
+		if rocket:
+			var dir = (get_global_mouse_position() - global_position).normalized()
+			rocket.spawn(global_position + dir * 30, dir.angle(), 700)
 		
 	if event.is_action_pressed("up"):
 		up_force = Vector2.UP * 400

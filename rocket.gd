@@ -4,24 +4,23 @@ class_name Rocket
 signal Despawn(ref)
 
 var angle: float = 0
-var vdir: Vector2 = Vector2.ZERO
 @onready var ray: RayCast2D = $Rocket/RayCast2D
 @onready var _timer: Timer = $Timer
-var strike: StrikeInfo = null
+@export var strike: StrikeInfo = null
 
 func _ready() -> void:
 	set_process(false)
 	set_physics_process(false)
-	var pf = PolygonFracture.new(Time.get_unix_time_from_system())
-	strike = StrikeInfo.new()
-	strike.poly = pf.generateRandomPolygon( Vector2(30, 30), Vector2.ONE *40)
-	
+	#var pl = PolygonLib.new()
+	#pl.createSupershape2DPolygon(50, 150, 4, 1/6, 4, 2, 4)
+	var pf = PolygonFracture.new(Time.get_ticks_usec())
+	strike.poly = pf.generateRandomPolygon(strike.size, Vector2.ONE * 40)
 
 func spawn(pos : Vector2, rot : float, force: float) -> void:
 	visible = true
 	global_position = pos
 	global_rotation = rot
-	self.vdir = Vector2.RIGHT.rotated(rot) * force
+	strike.force = force
 	set_process(true)
 	set_physics_process(true)
 	collision_layer = 1
@@ -43,7 +42,7 @@ func _process(delta: float) -> void:
 	$Rocket.rotation = angle
 	
 func _physics_process(delta: float) -> void:
-	apply_central_force(self.vdir)
+	apply_central_force(Vector2.RIGHT.rotated(global_rotation) * strike.force)
 
 func _on_body_entered(body: Node) -> void:
 	if body is Planet:
