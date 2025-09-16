@@ -1,4 +1,4 @@
-[gd_scene load_steps=23 format=3 uid="uid://dkrqw355dj5dq"]
+[gd_scene load_steps=26 format=3 uid="uid://dkrqw355dj5dq"]
 
 [ext_resource type="Script" uid="uid://d1fttd360x0jv" path="res://scene.gd" id="1_m7jmp"]
 [ext_resource type="Texture2D" uid="uid://cj6i6v7ep4mua" path="res://icon.svg" id="1_ulcgi"]
@@ -13,6 +13,9 @@
 [ext_resource type="PackedScene" uid="uid://cmhuraialdsjy" path="res://FractureShard.tscn" id="9_5juve"]
 [ext_resource type="PackedScene" path="res://CutShapeVisualizer.tscn" id="9_73fnb"]
 [ext_resource type="PackedScene" uid="uid://b2uwjewfppb18" path="res://amogus.tscn" id="12_akxrc"]
+[ext_resource type="PackedScene" uid="uid://0kfi3tfffc1w" path="res://blaster.tscn" id="13_gu47o"]
+[ext_resource type="Texture2D" uid="uid://e4x03cgtxd4h" path="res://images/projectiles/shotsmall.png" id="15_223my"]
+[ext_resource type="Texture2D" uid="uid://crv4qfjv5l8ap" path="res://images/projectiles/rocket.png" id="16_17rhs"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nxogm"]
 radius = 18.317427
@@ -323,7 +326,7 @@ position = Vector2(487, -474)
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
 ignore_rotation = false
 rotation_smoothing_enabled = true
-rotation_smoothing_speed = 0.8
+rotation_smoothing_speed = 2.0
 script = ExtResource("7_xlvrw")
 metadata/_edit_lock_ = true
 
@@ -333,6 +336,11 @@ instance_template = ExtResource("9_5juve")
 max_amount = 100
 instantiate_new_on_empty = true
 keep_instances_in_tree = true
+
+[node name="Pool_Blaster" parent="." instance=ExtResource("8_xlvrw")]
+placed_in_level = true
+instance_template = ExtResource("13_gu47o")
+max_amount = 20
 
 [node name="Pool_Rocket" parent="." instance=ExtResource("8_xlvrw")]
 placed_in_level = true
@@ -354,3 +362,17 @@ polygon = PackedVector2Array(-34, -115, 211, -153, 315, -46, 404, 130, 377, 209,
 [node name="Speed" type="Label" parent="HUD"]
 offset_right = 40.0
 offset_bottom = 23.0
+
+[node name="OptionButton" type="OptionButton" parent="HUD"]
+offset_left = 105.0
+offset_top = 4.0
+offset_right = 179.0
+offset_bottom = 42.0
+selected = 0
+item_count = 2
+popup/item_0/text = "∞"
+popup/item_0/icon = ExtResource("15_223my")
+popup/item_0/id = 0
+popup/item_1/text = "0"
+popup/item_1/icon = ExtResource("16_17rhs")
+popup/item_1/id = 1

@@ -11,7 +11,8 @@ const WEAPON_LASER = 3
 
 var rocket_count = 10
 
-signal spawn_projectile(pos: Vector2, angle: float, vel: float)
+signal spawn_projectile(pos: Vector2, angle: float, vel: float, weapon: int)
+signal weapon_selected(weapon: int)
 signal start_hitscan()
 
 
@@ -26,6 +27,7 @@ var areas: Array[Area2D] = []
 var gravity_areas: Dictionary = {}
 var behaivor = GRAVITY_BASED
 var sel_weapon: int = WEAPON_BLASTER
+var move_force: Vector2 = Vector2.ZERO
 
 var origin_parent: Node = null
 
@@ -83,7 +85,7 @@ func _physics_process(delta: float) -> void:
 	
 	
 	#print(get_parent().name, " ud:", up_direction)
-	var force: Vector2 = (forward_force + backward_force + up_force + back_force + acceleration_force)
+	var force: Vector2 = (move_force + acceleration_force)
 	#print(force)
 	var body_dump: float = 2.0
 	if is_on_wall():
@@ -167,6 +169,10 @@ func _on_area_sendor_area_exited(area: Area2D) -> void:
 			owner_area = null
 		if area in gravity_areas:
 			gravity_areas.erase(area)
+			
+func _process(delta: float) -> void:
+	rot_force = Input.get_axis("rotate_ccw", "rotate_cw") * 4.0
+	move_force = Input.get_vector("left", "right", "up", "back_force") * 400
 
 func _input(event: InputEvent) -> void:
 	if Input.is_key_pressed(KEY_SHIFT):
@@ -175,11 +181,11 @@ func _input(event: InputEvent) -> void:
 		behaivor = GRAVITY_BASED
 		
 	if event.is_action_pressed("weapon_1"):
-		sel_weapon = WEAPON_LASER
-	if event.is_action_pressed("weapon_2"):
 		sel_weapon = WEAPON_BLASTER
-	if event.is_action_pressed("weapon_3"):
+		weapon_selected.emit(WEAPON_BLASTER)
+	if event.is_action_pressed("weapon_2"):
 		sel_weapon = WEAPON_ROCKET_LOUNCHER
+		weapon_selected.emit(WEAPON_ROCKET_LOUNCHER)
 		
 	if event.is_action_pressed("magnet"):
 		$Magnet/CollisionShape2D.disabled = false
@@ -188,49 +194,15 @@ func _input(event: InputEvent) -> void:
 		
 	if event.is_action_pressed("shoot"):
 		var dir = (get_global_mouse_position() - global_position).normalized()
-		spawn_projectile.emit(global_position + dir * 30, dir.angle(), velocity.length())
+		if sel_weapon == WEAPON_BLASTER:
+			spawn_projectile.emit(global_position + dir * 30, dir.angle(), velocity.length(), sel_weapon)
+		elif sel_weapon == WEAPON_ROCKET_LOUNCHER:
+			spawn_projectile.emit(global_position + dir * 30, dir.angle(), velocity.length(), sel_weapon)
 
-		
-	if event.is_action_pressed("up"):
-		up_force = Vector2.UP * 400
-	if event.is_action_released("up"):
-		up_force = Vector2.ZERO
-		
-	if event.is_action_pressed("right"):
-		#physics_material_override.friction = 0.3
-		#if owner_area:
-		forward_force = Vector2.RIGHT * 400
-	if event.is_action_released("right"):
-		#physics_material_override.friction = 1000
-		#if owner_area:
-		forward_force = Vector2.ZERO
-	
-	if event.is_action_pressed("left"):
-		#physics_material_override.friction = 0.3
-		#if owner_area:
-		backward_force = Vector2.LEFT * 400
-	if event.is_action_released("left"):
-		#physics_material_override.friction = 1000
-		#if owner_area:
-		backward_force = Vector2.ZERO
-		
 	if event.is_action_pressed("force"):
 		acceleration_force = Vector2.UP * 1200
 	if event.is_action_released("force"):
 		acceleration_force = Vector2.ZERO
-	if event.is_action_pressed("back_force"):
-		back_force = Vector2.DOWN * 400
-	if event.is_action_released("back_force"):
-		back_force = Vector2.ZERO
-	if event.is_action_pressed("rotate_ccw"):
-		rot_force = -10
-	if event.is_action_released("rotate_ccw"):
-		rot_force = 0
-	if event.is_action_pressed("rotate_cw"):
-		rot_force = 10
-	if event.is_action_released("rotate_cw"):
-		rot_force = 0
-		
 
 
 func _on_tree_entered() -> void:

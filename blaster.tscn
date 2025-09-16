@@ -1,0 +1,31 @@
+[gd_scene load_steps=6 format=3 uid="uid://0kfi3tfffc1w"]
+
+[ext_resource type="Script" uid="uid://b6tsm3gs7a8y1" path="res://blaster.gd" id="1_uyb60"]
+[ext_resource type="Script" uid="uid://ljg1ctdjamhh" path="res://strike_info.gd" id="2_5a6mb"]
+[ext_resource type="Texture2D" uid="uid://e4x03cgtxd4h" path="res://images/projectiles/shotsmall.png" id="2_cni65"]
+
+[sub_resource type="Resource" id="Resource_5a6mb"]
+script = ExtResource("2_5a6mb")
+size = Vector2(30, 30)
+force = 1000.0
+metadata/_custom_type_script = "uid://ljg1ctdjamhh"
+
+[sub_resource type="CircleShape2D" id="CircleShape2D_uyb60"]
+radius = 3.0
+
+[node name="Blast" type="Area2D"]
+script = ExtResource("1_uyb60")
+strike = SubResource("Resource_5a6mb")
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="."]
+shape = SubResource("CircleShape2D_uyb60")
+
+[node name="Shotsmall" type="Sprite2D" parent="."]
+position = Vector2(-1.855, 0)
+texture = ExtResource("2_cni65")
+
+[node name="Timer" type="Timer" parent="."]
+wait_time = 10.0
+one_shot = true
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

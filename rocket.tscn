@@ -6,7 +6,7 @@
 
 [sub_resource type="Resource" id="Resource_tpb7v"]
 script = ExtResource("2_r2l15")
-size = Vector2(30, 30)
+size = Vector2(100, 100)
 force = 700.0
 metadata/_custom_type_script = "uid://ljg1ctdjamhh"
 

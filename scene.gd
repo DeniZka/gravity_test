@@ -9,17 +9,28 @@ extends Node2D
 @onready var _pool_fracture_shards := $Pool_FractureShards
 @onready var _pool_cut_visualizer := $Pool_CutVisualizer
 @onready var _pool_rocket : PoolBasic  = $Pool_Rocket
+@onready var _pool_blast: PoolBasic = $Pool_Blaster
 @onready var planet := $RedPlanet
 
 func _ready() -> void:
 	$AnimationPlayer.play("plank")
 	$AnimationPlayer2.play("planet")
 	player.spawn_projectile.connect(self.on_player_spawn_projectile)
+	player.weapon_selected.connect(self.on_player_weapon_selected)
 	
-func on_player_spawn_projectile(pos: Vector2, rot: float, vel: float):
-	var rocket: Rocket = _pool_rocket.getInstance()
-	if rocket:
-		rocket.spawn(pos, rot, vel)
+func on_player_weapon_selected(weapon: int):
+	$HUD/OptionButton.select(weapon)
+
+	
+func on_player_spawn_projectile(pos: Vector2, rot: float, vel: float, weapon: int):
+	if weapon == player.WEAPON_ROCKET_LOUNCHER:
+		var rocket: Rocket = _pool_rocket.getInstance()
+		if rocket:
+			rocket.spawn(pos, rot, vel)
+	elif weapon == player.WEAPON_BLASTER:
+		var blast: BlasterBullet = _pool_blast.getInstance()
+		if blast:
+			blast.spawn(pos, rot, vel)
 
 func _process(delta: float) -> void:
 	$CanvasLayer/Bg.rotation = -camera.get_screen_rotation()
@@ -52,11 +63,6 @@ func _input(event: InputEvent) -> void:
 				var area_p : float = fracture_shard.area / total_area
 				var rand_lifetime : float = _rng.randf_range(.1, 1) #+ 2.0 * area_p
 				spawnFractureBody(fracture_shard, planet.getTextureInfo(), 100, rand_lifetime)
-				
-			
-		#body.set_polygon(dict.fractures[0])
-		#print(dict)
-		call_deferred("test")
 	
 func cutSourcePolygons(source, cut_pos : Vector2, cut_shape : PackedVector2Array, cut_rot : float, cut_force : float = 0.0, fade_speed : float = 2.0) -> void:
 	var source_polygon : PackedVector2Array = source.get_polygon()

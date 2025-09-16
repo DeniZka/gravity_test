@@ -6,7 +6,6 @@ signal Despawn(ref)
 const MODE_PROJECTILE = "Projectile"
 const MODE_ITEM = "Item"
 
-var angle: float = 0
 @onready var ray: RayCast2D = $Rocket/RayCast2D
 @onready var _timer: Timer = $Timer
 @export_enum("Projectile", "Item") var mode: String = MODE_PROJECTILE:
@@ -55,8 +54,6 @@ func despawn() -> void:
 	set_physics_process(false)
 	_timer.stop()
 	
-func _process(delta: float) -> void:
-	$Rocket.rotation = angle
 	
 func _physics_process(delta: float) -> void:
 	apply_central_force(Vector2.RIGHT.rotated(global_rotation) * strike.force)
@@ -66,7 +63,6 @@ func _on_body_entered(body: Node) -> void:
 		strike.transform = Transform2D(0, global_position)
 		body.append_strike(strike)
 		Despawn.emit(self)
-	print(body)
 
 
 func _on_timer_timeout() -> void:
