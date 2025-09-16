@@ -12,20 +12,26 @@ class_name Planet
 
 @onready var _polygon2d := $Polygon2D
 @onready var _col_polygon2d := $CollisionPolygon2D
+@onready var _fracture_shards :PoolBasic = $FractureShards
 @onready var _rng := RandomNumberGenerator.new()
 var core_node: Node2D = null
 
 var _pool_inst: PackedScene = preload("res://pool-manager/Pool2DBasic.tscn")
-var _pool_fracture_shards :PoolBasic = null
+var _frac_shard_inst: PackedScene = preload("res://FractureShard.tscn")
+
 
 @onready var polyFracture := PolygonFracture.new()
 
 
 
 func _ready() -> void:
-	_pool_fracture_shards = _pool_inst.instantiate()
-	add_child(_pool_fracture_shards)
-	
+	#_pool_fracture_shards = _pool_inst.instantiate()
+	#add_child(_pool_fracture_shards)
+	#_pool_fracture_shards.placed_in_level = true
+	#_pool_fracture_shards.instantiate_new_on_empty = true
+	#_pool_fracture_shards.keep_instances_in_tree = true
+	#_pool_fracture_shards.instance_template = _frac_shard_inst
+	#_pool_fracture_shards.max_amount = 100
 	_col_polygon2d.polygon = _polygon2d.polygon
 	if has_node("Core"):
 		core_node = get_node("Core")
@@ -90,7 +96,7 @@ func append_strike(strike: StrikeInfo):
 			spawnFractureBody(fracture_shard, self.getTextureInfo(), 100, rand_lifetime)
 	
 func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary, new_mass : float, life_time : float) -> void:
-	var instance: FractureShard = _pool_fracture_shards.getInstance()
+	var instance: FractureShard = _fracture_shards.getInstance()
 	if not instance:
 		return
 	

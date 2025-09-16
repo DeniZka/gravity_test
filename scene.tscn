@@ -307,7 +307,8 @@ libraries = {
 &"": SubResource("AnimationLibrary_y2354")
 }
 
-[node name="SubViewport" type="SubViewport" parent="."]
+[node name="Amogus" parent="." instance=ExtResource("12_akxrc")]
+position = Vector2(171, -416)
 
 [node name="RedPlanet" parent="." instance=ExtResource("5_ni31j")]
 position = Vector2(1940, 437)
@@ -322,7 +323,7 @@ position = Vector2(487, -474)
 [node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
 ignore_rotation = false
 rotation_smoothing_enabled = true
-rotation_smoothing_speed = 0.5
+rotation_smoothing_speed = 0.8
 script = ExtResource("7_xlvrw")
 metadata/_edit_lock_ = true
 
@@ -347,9 +348,6 @@ max_amount = 25
 modulate = Color(1, 1, 1, 0.101960786)
 position = Vector2(975, 3)
 polygon = PackedVector2Array(-34, -115, 211, -153, 315, -46, 404, 130, 377, 209, 426, 284, 560, 244, 477, 337, 304, 330, 104, 233, -27, 206, -155, 36)
-
-[node name="Amogus" parent="." instance=ExtResource("12_akxrc")]
-position = Vector2(171, -416)
 
 [node name="HUD" type="CanvasLayer" parent="."]
 

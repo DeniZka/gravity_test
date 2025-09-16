@@ -9,6 +9,8 @@ const WEAPON_BLASTER = 0
 const WEAPON_ROCKET_LOUNCHER = 1
 const WEAPON_LASER = 3
 
+var rocket_count = 10
+
 signal spawn_projectile(pos: Vector2, angle: float, vel: float)
 signal start_hitscan()
 
@@ -16,7 +18,10 @@ signal start_hitscan()
 var forward_force: Vector2 = Vector2.ZERO
 var backward_force: Vector2 = Vector2.ZERO
 var up_force: Vector2 = Vector2.ZERO
+var acceleration_force: Vector2 = Vector2.ZERO
 var back_force: Vector2 = Vector2.ZERO
+var rot_force: float = 0
+var rot_vel: float = 0
 var areas: Array[Area2D] = []
 var gravity_areas: Dictionary = {}
 var behaivor = GRAVITY_BASED
@@ -78,7 +83,7 @@ func _physics_process(delta: float) -> void:
 	
 	
 	#print(get_parent().name, " ud:", up_direction)
-	var force: Vector2 = (forward_force + backward_force + up_force + back_force)
+	var force: Vector2 = (forward_force + backward_force + up_force + back_force + acceleration_force)
 	#print(force)
 	var body_dump: float = 2.0
 	if is_on_wall():
@@ -93,6 +98,14 @@ func _physics_process(delta: float) -> void:
 		velocity += (force.rotated(global_rotation) + gravity_force) * delta
 	#dump
 	velocity *= (1.0 - combined_dump / pps)
+	
+	## rotation calculation
+	rot_vel += rot_force * delta
+	var body_angular_damp = 2.0
+	var combined_angular_damp = ProjectSettings.get_setting("physics/2d/default_angular_damp") + body_angular_damp
+	rot_vel *= (1.0 - combined_angular_damp / pps)
+	rotate(rot_vel * delta)
+	
 	#print("velo: ", velocity)
 	move_and_slide()
 	#print("velo2: ", velocity)
@@ -202,13 +215,21 @@ func _input(event: InputEvent) -> void:
 		backward_force = Vector2.ZERO
 		
 	if event.is_action_pressed("force"):
-		up_force = Vector2.UP * 1200
+		acceleration_force = Vector2.UP * 1200
 	if event.is_action_released("force"):
-		up_force = Vector2.ZERO
+		acceleration_force = Vector2.ZERO
 	if event.is_action_pressed("back_force"):
 		back_force = Vector2.DOWN * 400
 	if event.is_action_released("back_force"):
 		back_force = Vector2.ZERO
+	if event.is_action_pressed("rotate_ccw"):
+		rot_force = -10
+	if event.is_action_released("rotate_ccw"):
+		rot_force = 0
+	if event.is_action_pressed("rotate_cw"):
+		rot_force = 10
+	if event.is_action_released("rotate_cw"):
+		rot_force = 0
 		
 
 

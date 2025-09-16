@@ -1,11 +1,7 @@
 class_name PolygonRestorer
 
-
-
-
 var shape_stack : Array = []
 var cur_entry : Dictionary
-
 
 func getOriginShape() -> PackedVector2Array:
 	if shape_stack.size() <= 0:
