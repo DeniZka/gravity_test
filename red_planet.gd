@@ -1,6 +1,7 @@
 extends AnimatableBody2D
 class_name Planet
 
+@export var destruction_levels: Array[DestructionLevel] = []
 @export var rand_linear_velocity_range: Vector2 = Vector2(750.0, 1000.0)
 #export(Vector2) var rand_angular_velocity_range = Vector2(-10.0, 10.0)
 @export var radius: float = 250.0
