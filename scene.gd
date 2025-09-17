@@ -53,7 +53,7 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("test"):
 		var ct: Transform2D = $Cutout.transform
 		#ct = ct.scaled(Vector2.ONE * (1/1.7))
-		var cut_fracture_info: Dictionary = polyFracture.cutFracture(planet.get_polygon(), $Cutout.polygon, planet.global_transform,  $Cutout.transform, 0, 0, 0, 0)
+		var cut_fracture_info: Dictionary = polyFracture.cutFracture(planet.get_polygon(), $Cutout.polygon, planet.global_transform,  $Cutout.transform, 4000, 0, 0, 0)
 		planet.set_polygon(cut_fracture_info.shapes[0].shape)
 		#var body: RigidShape = rigidbody_template.instantiate()
 		var total_area : float = PolygonLib.getPolygonArea($Cutout.polygon)

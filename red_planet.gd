@@ -9,10 +9,9 @@ class_name Planet
 
 @export var placed_in_level: bool = false
 @export var randomize_texture_properties: bool = true
-@export var poly_texture: Texture2D
 
-@onready var _polygon2d := $Polygon2D
-@onready var _col_polygon2d := $CollisionPolygon2D
+@onready var _polygon2d: Polygon2D = null
+@onready var _col_polygon2d: CollisionPolygon2D = null
 @onready var _fracture_shards :PoolBasic = $FractureShards
 @onready var _rng := RandomNumberGenerator.new()
 var core_node: Node2D = null
@@ -22,6 +21,8 @@ var _frac_shard_inst: PackedScene = preload("res://FractureShard.tscn")
 
 
 @onready var polyFracture := PolygonFracture.new()
+@onready var active_destruction_level: int = 0
+var cp_pool: Array[CollisionPolygon2D] = []
 
 
 
@@ -33,18 +34,30 @@ func _ready() -> void:
 	#_pool_fracture_shards.keep_instances_in_tree = true
 	#_pool_fracture_shards.instance_template = _frac_shard_inst
 	#_pool_fracture_shards.max_amount = 100
-	_col_polygon2d.polygon = _polygon2d.polygon
-	if has_node("Core"):
-		core_node = get_node("Core")
+	
+	#if has_node("Core"):
+	#	core_node = get_node("Core")
 	
 	var childs = get_children()
 	for child in get_children():
 		if child is PlanetArea:
 			child.setup.set_master(self)
-
-func _physics_process(delta: float) -> void:
-	if core_node:
-		core_node.rotate(0.01 * delta)
+	#destruction_levels[active_destruction_level].enable()
+	enable_level(0)
+	
+func enable_level(level: int):
+	_polygon2d = get_node(destruction_levels[level].poly[0])
+	if len(cp_pool) < 1:
+		cp_pool.append(CollisionPolygon2D.new())
+	_col_polygon2d = cp_pool.pop_front()
+	_col_polygon2d.polygon = _polygon2d.polygon
+	_col_polygon2d.set_deferred("disabled", false)
+	if not _col_polygon2d.get_parent():
+		add_child(_col_polygon2d)
+	
+func disable_level(level: int, hide: bool = true):
+	_col_polygon2d.set_deferred("disabled", true)
+	cp_pool.append(_col_polygon2d)
 
 func getGlobalRotPolygon() -> float:
 	return _polygon2d.global_rotation
@@ -83,9 +96,21 @@ func get_shape_transform() -> Transform2D:
 	return _col_polygon2d.global_transform
 	
 func append_strike(strike: StrikeInfo):
-	var cut_fracture_info: Dictionary = polyFracture.cutFracture(self.get_polygon(), strike.poly, self.global_transform,  strike.transform, 0, 0, 0, 0)
+	var half_area = PolygonLib.getPolygonArea(_polygon2d.polygon) / 2
+	var cut_fracture_info: Dictionary = polyFracture.cutFracture(_polygon2d.polygon, strike.poly, self.global_transform,  strike.transform, half_area, 0, 0, 0)
+	#leave maximal of shapes
+	var max_area: float = 0
+	var leave_shape_index = 0
+	if len(cut_fracture_info.shapes) > 1:
+		for i in len(cut_fracture_info.shapes):
+			var area = PolygonLib.getPolygonArea(cut_fracture_info.shapes[i].shape)
+			if area > max_area:
+				leave_shape_index = i
+				max_area = area
 	if cut_fracture_info.shapes:
-		set_polygon(cut_fracture_info.shapes[0].shape)
+		var area = PolygonLib.getPolygonArea(cut_fracture_info.shapes[leave_shape_index].shape)
+		print("leave_area: ", area)
+		set_polygon(cut_fracture_info.shapes[leave_shape_index].shape)
 	else:
 		set_polygon(PackedVector2Array([]))
 	
