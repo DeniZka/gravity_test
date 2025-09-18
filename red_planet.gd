@@ -23,10 +23,23 @@ var _frac_shard_inst: PackedScene = preload("res://FractureShard.tscn")
 @onready var polyFracture := PolygonFracture.new()
 @onready var active_destruction_level: int = 0
 var cp_pool: Array[CollisionPolygon2D] = []
+@onready var outline_line: Line2D = Line2D.new()
+@onready var outline_timer: Timer = Timer.new()
+var outline_available: bool = false
 
 
 
 func _ready() -> void:
+	self.input_pickable = true
+	self.mouse_shape_entered.connect(_on_mouse_shape_entered)
+	self.mouse_entered.connect(_on_mouse_entered)
+	add_child(outline_line)
+	outline_line.closed = true
+	outline_line.width = 2
+	add_child(outline_timer)
+	outline_timer.one_shot = true
+	outline_timer.wait_time = 1
+	outline_timer.timeout.connect(_on_outline_timer)
 	#_pool_fracture_shards = _pool_inst.instantiate()
 	#add_child(_pool_fracture_shards)
 	#_pool_fracture_shards.placed_in_level = true
@@ -120,7 +133,13 @@ func append_strike(strike: StrikeInfo):
 			var area_p : float = fracture_shard.area / total_area
 			var rand_lifetime : float = _rng.randf_range(.1, 1) #+ 2.0 * area_p
 			spawnFractureBody(fracture_shard, self.getTextureInfo(), 100, rand_lifetime)
-	
+			
+	if not cut_fracture_info.shapes:
+		disable_level(active_destruction_level)
+		active_destruction_level += 1
+		if len(destruction_levels) > active_destruction_level:
+			call_deferred("enable_level", active_destruction_level)
+	2
 func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary, new_mass : float, life_time : float) -> void:
 	var instance: FractureShard = _fracture_shards.getInstance()
 	if not instance:
@@ -130,3 +149,24 @@ func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary, n
 	instance.spawn(fracture_shard.spawn_pos, fracture_shard.spawn_rot, fracture_shard.source_global_trans.get_scale(), life_time)
 	instance.setPolygon(fracture_shard.centered_shape, Color(1,1,1,.7), PolygonLib.setTextureOffset(texture_info, fracture_shard.centroid))
 	instance.setMass(new_mass)
+
+func _on_mouse_entered() -> void:
+	outline_available = true
+
+func _on_mouse_shape_entered(shape_idx: int) -> void:
+	if outline_available:
+		var owner_id: int = self.shape_find_owner(shape_idx)
+		var shape: CollisionPolygon2D = self.shape_owner_get_owner(owner_id)
+		outline_line.points = shape.polygon
+		outline_line.visible = true
+		outline_timer.start()
+		outline_available = false
+	
+func _on_outline_timer():
+	outline_line.visible = false
+	
+func _process(delta: float) -> void:
+	outline_line.modulate.a = outline_timer.time_left
+	
+	
+	

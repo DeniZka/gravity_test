@@ -1,4 +1,4 @@
-[gd_scene load_steps=9 format=3 uid="uid://b2uwjewfppb18"]
+[gd_scene load_steps=10 format=3 uid="uid://b2uwjewfppb18"]
 
 [ext_resource type="Script" uid="uid://yaka46uyewui" path="res://red_planet.gd" id="1_0syxu"]
 [ext_resource type="Texture2D" uid="uid://d2ih4e85vfueb" path="res://images/suit_owner.png" id="1_2mwk0"]
@@ -13,18 +13,25 @@ script = ExtResource("2_xwtd7")
 poly = Array[NodePath]([NodePath("Suit")])
 metadata/_custom_type_script = "uid://b6m6yunlme3ah"
 
+[sub_resource type="Resource" id="Resource_e85kc"]
+script = ExtResource("2_xwtd7")
+poly = Array[NodePath]([NodePath("Glasses")])
+metadata/_custom_type_script = "uid://b6m6yunlme3ah"
+
 [node name="Amogus" type="AnimatableBody2D"]
 script = ExtResource("1_0syxu")
-destruction_levels = Array[ExtResource("2_xwtd7")]([SubResource("Resource_xwtd7")])
+destruction_levels = Array[ExtResource("2_xwtd7")]([SubResource("Resource_xwtd7"), SubResource("Resource_e85kc")])
 
 [node name="SuitOwner" type="Sprite2D" parent="."]
 position = Vector2(0, 7)
 texture = ExtResource("1_2mwk0")
 
-[node name="Glasses" type="Sprite2D" parent="."]
-position = Vector2(31, -35)
-scale = Vector2(0.09037635, 0.11833334)
+[node name="Glasses" type="Polygon2D" parent="."]
 texture = ExtResource("3_7nxwo")
+texture_offset = Vector2(10.745, 70.235)
+texture_scale = Vector2(11.111, 8.475)
+polygon = PackedVector2Array(-6, -44, 68, -44, 68, -37, 65, -37, 65, -34, 62, -34, 62, -30, 59, -30, 59, -26, 40, -26, 40, -30, 37, -30, 37, -34, 34, -34, 34, -41, 28, -41, 28, -33, 25, -33, 25, -29, 22, -29, 22, -26, 2, -26, 2, -30, 0, -30, 0, -34, -3, -34, -3, -37, -6, -37)
+uv = PackedVector2Array(-6, -44, 68, -44, 68, -37, 65, -37, 65, -34, 62, -34, 62, -30, 59, -30, 59, -26, 40, -26, 40, -30, 37, -30, 37, -34, 34, -34, 34, -41, 28, -41, 28, -33, 25, -33, 25, -29, 22, -29, 22, -26, 2, -26, 2, -30, 0, -30, 0, -34, -3, -34, -3, -37, -6, -37)
 
 [node name="Suit" type="Polygon2D" parent="."]
 texture = ExtResource("2_0syxu")

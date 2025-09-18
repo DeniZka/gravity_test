@@ -34,6 +34,7 @@ metadata/_custom_type_script = "uid://jv2vp43s31cy"
 radius = 1100.0
 
 [node name="RedPlanet" type="AnimatableBody2D"]
+input_pickable = true
 script = ExtResource("1_waapx")
 destruction_levels = Array[ExtResource("2_wj02g")]([SubResource("Resource_dsek3")])
 
