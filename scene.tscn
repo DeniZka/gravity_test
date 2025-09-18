@@ -1,4 +1,4 @@
-[gd_scene load_steps=26 format=3 uid="uid://dkrqw355dj5dq"]
+[gd_scene load_steps=31 format=3 uid="uid://dkrqw355dj5dq"]
 
 [ext_resource type="Script" uid="uid://d1fttd360x0jv" path="res://scene.gd" id="1_m7jmp"]
 [ext_resource type="Texture2D" uid="uid://cj6i6v7ep4mua" path="res://icon.svg" id="1_ulcgi"]
@@ -16,6 +16,7 @@
 [ext_resource type="PackedScene" uid="uid://0kfi3tfffc1w" path="res://blaster.tscn" id="13_gu47o"]
 [ext_resource type="Texture2D" uid="uid://e4x03cgtxd4h" path="res://images/projectiles/shotsmall.png" id="15_223my"]
 [ext_resource type="Texture2D" uid="uid://crv4qfjv5l8ap" path="res://images/projectiles/rocket.png" id="16_17rhs"]
+[ext_resource type="Shader" uid="uid://l6je4ehpcnx0" path="res://beam.gdshader" id="17_17rhs"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_nxogm"]
 radius = 18.317427
@@ -106,6 +107,65 @@ _data = {
 &"plank": SubResource("Animation_u3cyc")
 }
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_17rhs"]
+shader = ExtResource("17_17rhs")
+shader_parameter/beams = 7
+shader_parameter/energy = 20.0
+shader_parameter/roughness = 3
+shader_parameter/frequency = 10
+shader_parameter/speed = 0.245
+shader_parameter/thickness = 0.0
+shader_parameter/outline_thickness = 0.0250000011875
+shader_parameter/beam_difference = 1.0
+shader_parameter/glow = 3.0
+shader_parameter/outline_glow = 3.0
+shader_parameter/color = Color(0.91, 1, 1, 1)
+shader_parameter/outline_color = Color(0.5, 1, 0.96, 1)
+shader_parameter/progress = 1.0
+shader_parameter/y_offset = 0.0
+shader_parameter/fixed_edge_size = 0.5
+shader_parameter/noise_scale = Vector2(1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_8j1ou"]
+shader = ExtResource("17_17rhs")
+shader_parameter/beams = 3
+shader_parameter/energy = 3.0
+shader_parameter/roughness = 6
+shader_parameter/frequency = 12
+shader_parameter/speed = 1.0
+shader_parameter/thickness = 0.006
+shader_parameter/outline_thickness = 0.03
+shader_parameter/beam_difference = 0.0
+shader_parameter/glow = 0.0
+shader_parameter/outline_glow = 0.0
+shader_parameter/color = Color(0.91, 1, 1, 1)
+shader_parameter/outline_color = Color(0.5, 1, 0.96, 1)
+shader_parameter/progress = 1.0
+shader_parameter/y_offset = 0.0
+shader_parameter/fixed_edge_size = 0.05
+shader_parameter/noise_scale = Vector2(1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_o3hm7"]
+shader = ExtResource("17_17rhs")
+shader_parameter/beams = 2
+shader_parameter/energy = 3.0
+shader_parameter/roughness = 3
+shader_parameter/frequency = 10
+shader_parameter/speed = 1.0
+shader_parameter/thickness = 0.006
+shader_parameter/outline_thickness = 0.03
+shader_parameter/beam_difference = 0.0
+shader_parameter/glow = 0.0
+shader_parameter/outline_glow = 0.0
+shader_parameter/color = Color(0.91, 1, 1, 1)
+shader_parameter/outline_color = Color(0.5, 1, 0.96, 1)
+shader_parameter/progress = 1.0
+shader_parameter/y_offset = 0.0
+shader_parameter/fixed_edge_size = 0.1490000070775
+shader_parameter/noise_scale = Vector2(1, 1)
+
+[sub_resource type="Gradient" id="Gradient_o3hm7"]
+
 [node name="Node2D" type="Node2D"]
 script = ExtResource("1_m7jmp")
 
@@ -113,7 +173,7 @@ script = ExtResource("1_m7jmp")
 layer = -1
 
 [node name="Bg" type="Sprite2D" parent="CanvasLayer"]
-modulate = Color(0.28, 0.28, 0.28, 1)
+modulate = Color(0.21, 0.21, 0.21, 1)
 z_index = -1
 position = Vector2(577, 326)
 scale = Vector2(1.3, 1.3)
@@ -376,3 +436,24 @@ popup/item_0/id = 0
 popup/item_1/text = "0"
 popup/item_1/icon = ExtResource("16_17rhs")
 popup/item_1/id = 1
+
+[node name="ColorRect" type="ColorRect" parent="."]
+texture_repeat = 2
+material = SubResource("ShaderMaterial_17rhs")
+offset_left = -184.0
+offset_top = -168.0
+offset_right = -64.0
+offset_bottom = -56.0
+
+[node name="Polygon2D" type="Polygon2D" parent="."]
+material = SubResource("ShaderMaterial_8j1ou")
+position = Vector2(-40, -16)
+polygon = PackedVector2Array(0, 0, 64, 0, 64, 48, 0, 48)
+uv = PackedVector2Array(0, 0, 1, 0, 1, 1, 0, 1)
+
+[node name="Line2D2" type="Line2D" parent="."]
+material = SubResource("ShaderMaterial_o3hm7")
+position = Vector2(-8, 48)
+points = PackedVector2Array(-168, -16, -96, -64, -40, -16, -16, -8)
+gradient = SubResource("Gradient_o3hm7")
+texture_mode = 2

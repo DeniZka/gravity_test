@@ -1,8 +1,10 @@
-[gd_scene load_steps=8 format=3 uid="uid://buap177hs2q6p"]
+[gd_scene load_steps=14 format=3 uid="uid://buap177hs2q6p"]
 
 [ext_resource type="Script" uid="uid://cjat3bbn4qvqs" path="res://character_body_2d.gd" id="1_pjt0s"]
 [ext_resource type="Texture2D" uid="uid://cj6i6v7ep4mua" path="res://icon.svg" id="2_wa5vi"]
 [ext_resource type="Texture2D" uid="uid://k4kx0m2e5wym" path="res://spaceship.png" id="3_wa5vi"]
+[ext_resource type="Shader" uid="uid://l6je4ehpcnx0" path="res://beam.gdshader" id="3_wfnr8"]
+[ext_resource type="Script" uid="uid://djnua5vtdlr7b" path="res://beam.gd" id="4_px5sl"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_px5sl"]
 radius = 126.01587
@@ -15,6 +17,43 @@ radius = 15.0
 height = 34.0
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_73fnb"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_px5sl"]
+shader = ExtResource("3_wfnr8")
+shader_parameter/beams = 2
+shader_parameter/energy = 3.0
+shader_parameter/roughness = 3
+shader_parameter/frequency = 10
+shader_parameter/speed = 1.0
+shader_parameter/thickness = 0.006
+shader_parameter/outline_thickness = 0.03
+shader_parameter/beam_difference = 0.0
+shader_parameter/glow = 0.0
+shader_parameter/outline_glow = 0.0
+shader_parameter/color = Color(0.91, 1, 1, 1)
+shader_parameter/outline_color = Color(0.5, 1, 0.96, 1)
+shader_parameter/progress = 1.0
+shader_parameter/y_offset = 0.0
+shader_parameter/fixed_edge_size = 0.1490000070775
+shader_parameter/noise_scale = Vector2(1, 1)
+
+[sub_resource type="Gradient" id="Gradient_0qfo5"]
+offsets = PackedFloat32Array(0, 0.35119048)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GradientTexture2D" id="GradientTexture2D_yxww1"]
+gradient = SubResource("Gradient_0qfo5")
+width = 8
+height = 8
+fill = 1
+fill_from = Vector2(0.5, 0.5)
+
+[sub_resource type="ParticleProcessMaterial" id="ParticleProcessMaterial_wdpcj"]
+particle_flag_disable_z = true
+direction = Vector3(1, 1, 0)
+initial_velocity_min = 50.0
+initial_velocity_max = 106.38
+gravity = Vector3(-44.735, 0, 0)
 
 [node name="CharacterBody2D" type="CharacterBody2D"]
 motion_mode = 1
@@ -53,9 +92,28 @@ texture = ExtResource("2_wa5vi")
 [node name="CollisionShape2D" type="CollisionShape2D" parent="AreaSendor"]
 shape = SubResource("CircleShape2D_73fnb")
 
+[node name="Beam" type="Line2D" parent="."]
+material = SubResource("ShaderMaterial_px5sl")
+position = Vector2(-144, 14)
+points = PackedVector2Array(144, -15, 0, 0)
+width = 100.0
+texture_mode = 2
+script = ExtResource("4_px5sl")
+
+[node name="GPUParticles2D" type="GPUParticles2D" parent="Beam"]
+modulate = Color(0.49, 1, 0.966, 1)
+amount = 20
+texture = SubResource("GradientTexture2D_yxww1")
+lifetime = 0.32
+preprocess = 0.71
+explosiveness = 0.38
+process_material = SubResource("ParticleProcessMaterial_wdpcj")
+
 [node name="Spaceship" type="Sprite2D" parent="."]
 scale = Vector2(0.055, 0.055)
 texture = ExtResource("3_wa5vi")
+
+[node name="BeamRay" type="RayCast2D" parent="."]
 
 [connection signal="tree_entered" from="." to="." method="_on_tree_entered"]
 [connection signal="body_entered" from="Dock" to="." method="_on_dock_body_entered"]

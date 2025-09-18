@@ -139,7 +139,7 @@ func append_strike(strike: StrikeInfo):
 		active_destruction_level += 1
 		if len(destruction_levels) > active_destruction_level:
 			call_deferred("enable_level", active_destruction_level)
-	2
+	
 func spawnFractureBody(fracture_shard : Dictionary, texture_info : Dictionary, new_mass : float, life_time : float) -> void:
 	var instance: FractureShard = _fracture_shards.getInstance()
 	if not instance:

@@ -28,6 +28,8 @@ var gravity_areas: Dictionary = {}
 var behaivor = GRAVITY_BASED
 var sel_weapon: int = WEAPON_BLASTER
 var move_force: Vector2 = Vector2.ZERO
+var enable_beam: bool = false
+@onready var beam_ray: RayCast2D = $BeamRay
 
 var origin_parent: Node = null
 
@@ -41,6 +43,9 @@ func angle_to_angle(from, to):
 	return fposmod(to-from + PI, PI*2) - PI
 
 func _physics_process(delta: float) -> void:
+	if enable_beam:
+		beam_ray.get_collision_point()
+	
 	super._physics_process(delta)
 	if get_parent() is Planet:
 		up_direction = (global_position - get_parent().global_position).normalized()
@@ -169,8 +174,29 @@ func _on_area_sendor_area_exited(area: Area2D) -> void:
 			owner_area = null
 		if area in gravity_areas:
 			gravity_areas.erase(area)
-			
+		
 func _process(delta: float) -> void:
+	if enable_beam:
+		$Beam.visible = true
+		beam_ray.target_position = get_local_mouse_position()
+		if beam_ray.get_collider():
+			$Beam.global_position = beam_ray.get_collision_point()
+			var v2 = beam_ray.get_collision_normal()
+			$Beam/GPUParticles2D.process_material.spread = 45
+			$Beam/GPUParticles2D.process_material.direction = Vector3(v2.x, v2.y, 0)
+			$Beam/GPUParticles2D.process_material.gravity = Vector3(-v2.x, -v2.y, 0) * 200.0
+		else:
+			$Beam.global_position = get_global_mouse_position()
+			$Beam/GPUParticles2D.process_material.spread = 180
+			$Beam/GPUParticles2D.process_material.direction = Vector3(0, 0, 0)
+			$Beam/GPUParticles2D.process_material.gravity = Vector3(0, 0, 0)
+		$Beam.points[0] = - $Beam.position
+			
+	else:
+		$Beam/GPUParticles2D.emitting = false
+		$Beam.visible = false
+	
+	
 	rot_force = Input.get_axis("rotate_ccw", "rotate_cw") * 4.0
 	move_force = Input.get_vector("left", "right", "up", "back_force") * 400
 
@@ -186,6 +212,15 @@ func _input(event: InputEvent) -> void:
 	if event.is_action_pressed("weapon_2"):
 		sel_weapon = WEAPON_ROCKET_LOUNCHER
 		weapon_selected.emit(WEAPON_ROCKET_LOUNCHER)
+	if event.is_action_pressed("sub_weapon"):
+		enable_beam = true
+		$Beam/GPUParticles2D.emitting = true
+		beam_ray.enabled = true
+	if event.is_action_released("sub_weapon"):
+		enable_beam = false
+		beam_ray.enabled = false
+		$Beam/GPUParticles2D.emitting = false
+		$Beam/GPUParticles2D.restart()
 		
 	if event.is_action_pressed("magnet"):
 		$Magnet/CollisionShape2D.disabled = false
