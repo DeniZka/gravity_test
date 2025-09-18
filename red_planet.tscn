@@ -1,4 +1,4 @@
-[gd_scene load_steps=16 format=3 uid="uid://ccehe80xetj6t"]
+[gd_scene load_steps=20 format=3 uid="uid://ccehe80xetj6t"]
 
 [ext_resource type="Script" uid="uid://dl1mvpq2oswla" path="res://gravity_area.gd" id="1_606m0"]
 [ext_resource type="Script" uid="uid://yaka46uyewui" path="res://red_planet.gd" id="1_waapx"]
@@ -10,6 +10,7 @@
 [ext_resource type="Script" uid="uid://c51eu0erc1n7w" path="res://core.gd" id="4_dsek3"]
 [ext_resource type="PackedScene" uid="uid://dhrqqo38wiuqi" path="res://pool-manager/Pool2DBasic.tscn" id="7_4qakw"]
 [ext_resource type="PackedScene" uid="uid://cmhuraialdsjy" path="res://FractureShard.tscn" id="8_wj02g"]
+[ext_resource type="Shader" uid="uid://bdoskqen727u8" path="res://cloud.gdshader" id="11_whogj"]
 
 [sub_resource type="Resource" id="Resource_dsek3"]
 script = ExtResource("2_wj02g")
@@ -32,6 +33,22 @@ metadata/_custom_type_script = "uid://jv2vp43s31cy"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_amldy"]
 radius = 1100.0
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_dsek3"]
+frequency = 0.0032
+domain_warp_enabled = true
+metadata/_preview_in_3d_space_ = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_whogj"]
+width = 1024
+height = 1024
+noise = SubResource("FastNoiseLite_dsek3")
+seamless = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sryvg"]
+shader = ExtResource("11_whogj")
+shader_parameter/noise = SubResource("NoiseTexture2D_whogj")
+shader_parameter/distortion = -18.23
 
 [node name="RedPlanet" type="AnimatableBody2D"]
 input_pickable = true
@@ -73,3 +90,11 @@ instance_template = ExtResource("8_wj02g")
 max_amount = 100
 instantiate_new_on_empty = true
 keep_instances_in_tree = true
+
+[node name="Clouds" type="Sprite2D" parent="."]
+z_index = 1
+material = SubResource("ShaderMaterial_sryvg")
+position = Vector2(-14.500015, -27.500046)
+scale = Vector2(2.095, 2.095)
+texture = SubResource("NoiseTexture2D_whogj")
+script = ExtResource("4_dsek3")
