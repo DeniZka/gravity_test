@@ -1,4 +1,4 @@
-[gd_scene load_steps=15 format=3 uid="uid://b2uwjewfppb18"]
+[gd_scene load_steps=17 format=3 uid="uid://b2uwjewfppb18"]
 
 [ext_resource type="Script" uid="uid://yaka46uyewui" path="res://red_planet.gd" id="1_0syxu"]
 [ext_resource type="Texture2D" uid="uid://d2ih4e85vfueb" path="res://images/suit_owner.png" id="1_2mwk0"]
@@ -8,7 +8,7 @@
 [ext_resource type="PackedScene" uid="uid://dhrqqo38wiuqi" path="res://pool-manager/Pool2DBasic.tscn" id="4_bmcrx"]
 [ext_resource type="Shader" uid="uid://l6je4ehpcnx0" path="res://beam.gdshader" id="4_e85kc"]
 [ext_resource type="PackedScene" uid="uid://cmhuraialdsjy" path="res://FractureShard.tscn" id="5_7nxwo"]
-[ext_resource type="Shader" uid="uid://dkcimpo01f68i" path="res://test1.tres" id="5_mnnm4"]
+[ext_resource type="Shader" uid="uid://dawglbl0278al" path="res://images/lava.gdshader" id="5_mnnm4"]
 
 [sub_resource type="Resource" id="Resource_xwtd7"]
 script = ExtResource("2_xwtd7")
@@ -27,25 +27,36 @@ metadata/_custom_type_script = "uid://b6m6yunlme3ah"
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_mnnm4"]
 shader = ExtResource("4_e85kc")
-shader_parameter/beams = 2
-shader_parameter/energy = 3.0
+shader_parameter/scale_x = 26.54
+shader_parameter/beams = 4
+shader_parameter/energy = 24.23
 shader_parameter/roughness = 3
 shader_parameter/frequency = 10
 shader_parameter/speed = 1.0
-shader_parameter/thickness = 0.05600000266
-shader_parameter/outline_thickness = 0.10000000149012
+shader_parameter/thickness = 0.0410000019475
+shader_parameter/outline_thickness = 0.01600000076
 shader_parameter/beam_difference = 0.0
 shader_parameter/glow = 0.0
 shader_parameter/outline_glow = 0.0
 shader_parameter/color = Color(0.91, 1, 1, 1)
 shader_parameter/outline_color = Color(0.5, 1, 0.96, 1)
 shader_parameter/progress = 1.0
-shader_parameter/y_offset = 0.06300002674250005
-shader_parameter/fixed_edge_size = 0.054000002564999997
+shader_parameter/y_offset = 0.04100002569750005
+shader_parameter/fixed_edge_size = 0.05400000256499999
 shader_parameter/noise_scale = Vector2(1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_oyinf"]
+frequency = 0.5926
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_anxlq"]
+width = 30
+height = 30
+noise = SubResource("FastNoiseLite_oyinf")
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_oyinf"]
 shader = ExtResource("5_mnnm4")
+shader_parameter/timeScaleFactor = 0.04
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_anxlq")
 
 [node name="Amogus" type="AnimatableBody2D"]
 script = ExtResource("1_0syxu")
@@ -61,6 +72,7 @@ material = SubResource("ShaderMaterial_mnnm4")
 points = PackedVector2Array(-4, 0, 0, -5, 7, -6, 14, -2, 13, 7, 8, 13, -1, 20, -6, 25, -13, 18, -19, 13, -23, 3, -21, -6, -12, -8, -8, -4)
 closed = true
 texture_mode = 2
+sharp_limit = 10.0
 
 [node name="Heart" type="Polygon2D" parent="."]
 material = SubResource("ShaderMaterial_oyinf")
