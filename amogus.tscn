@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3 uid="uid://b2uwjewfppb18"]
+[gd_scene load_steps=15 format=3 uid="uid://b2uwjewfppb18"]
 
 [ext_resource type="Script" uid="uid://yaka46uyewui" path="res://red_planet.gd" id="1_0syxu"]
 [ext_resource type="Texture2D" uid="uid://d2ih4e85vfueb" path="res://images/suit_owner.png" id="1_2mwk0"]
@@ -6,7 +6,9 @@
 [ext_resource type="Script" uid="uid://b6m6yunlme3ah" path="res://destruction_level.gd" id="2_xwtd7"]
 [ext_resource type="Texture2D" uid="uid://b80bim0x457g3" path="res://images/glasses.png" id="3_7nxwo"]
 [ext_resource type="PackedScene" uid="uid://dhrqqo38wiuqi" path="res://pool-manager/Pool2DBasic.tscn" id="4_bmcrx"]
+[ext_resource type="Shader" uid="uid://l6je4ehpcnx0" path="res://beam.gdshader" id="4_e85kc"]
 [ext_resource type="PackedScene" uid="uid://cmhuraialdsjy" path="res://FractureShard.tscn" id="5_7nxwo"]
+[ext_resource type="Shader" uid="uid://dkcimpo01f68i" path="res://test1.tres" id="5_mnnm4"]
 
 [sub_resource type="Resource" id="Resource_xwtd7"]
 script = ExtResource("2_xwtd7")
@@ -18,15 +20,55 @@ script = ExtResource("2_xwtd7")
 poly = Array[NodePath]([NodePath("Glasses")])
 metadata/_custom_type_script = "uid://b6m6yunlme3ah"
 
+[sub_resource type="Resource" id="Resource_mnnm4"]
+script = ExtResource("2_xwtd7")
+poly = Array[NodePath]([NodePath("SuitOwner")])
+metadata/_custom_type_script = "uid://b6m6yunlme3ah"
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_mnnm4"]
+shader = ExtResource("4_e85kc")
+shader_parameter/beams = 2
+shader_parameter/energy = 3.0
+shader_parameter/roughness = 3
+shader_parameter/frequency = 10
+shader_parameter/speed = 1.0
+shader_parameter/thickness = 0.05600000266
+shader_parameter/outline_thickness = 0.10000000149012
+shader_parameter/beam_difference = 0.0
+shader_parameter/glow = 0.0
+shader_parameter/outline_glow = 0.0
+shader_parameter/color = Color(0.91, 1, 1, 1)
+shader_parameter/outline_color = Color(0.5, 1, 0.96, 1)
+shader_parameter/progress = 1.0
+shader_parameter/y_offset = 0.06300002674250005
+shader_parameter/fixed_edge_size = 0.054000002564999997
+shader_parameter/noise_scale = Vector2(1, 1)
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_oyinf"]
+shader = ExtResource("5_mnnm4")
+
 [node name="Amogus" type="AnimatableBody2D"]
 script = ExtResource("1_0syxu")
-destruction_levels = Array[ExtResource("2_xwtd7")]([SubResource("Resource_xwtd7"), SubResource("Resource_e85kc")])
+destruction_levels = Array[ExtResource("2_xwtd7")]([SubResource("Resource_xwtd7"), SubResource("Resource_e85kc"), SubResource("Resource_mnnm4")])
 
-[node name="SuitOwner" type="Sprite2D" parent="."]
-position = Vector2(0, 7)
+[node name="SuitOwner" type="Polygon2D" parent="."]
 texture = ExtResource("1_2mwk0")
+texture_offset = Vector2(75.965, 92.79)
+polygon = PackedVector2Array(-39, -39, -38, -46, -37, -54, -35, -62, -33, -68, -29, -73, -22, -79, -15, -83, -6, -85, 9, -87, 20, -87, 31, -85, 41, -81, 48, -76, 51, -71, 53, -68, 54, -63, 54, -56, 56, -53, 59, -49, 59, -44, 61, -35, 62, -25, 63, -20, 63, -16, 64, 2, 64, 29, 62, 44, 55, 77, 52, 83, 50, 86, 45, 88, 38, 88, 32, 87, 27, 86, 23, 81, 22, 76, 21, 57, 18, 56, 6, 61, 5, 62, 5, 71, 5, 80, 2, 86, -1, 88, -6, 90, -14, 90, -25, 88, -28, 86, -31, 81, -33, 72, -35, 63, -36, 55, -37, 47, -38, 39, -39, 28, -40, 20, -41, 6, -41, -1, -41, -20)
+
+[node name="Line2D" type="Line2D" parent="."]
+material = SubResource("ShaderMaterial_mnnm4")
+points = PackedVector2Array(-4, 0, 0, -5, 7, -6, 14, -2, 13, 7, 8, 13, -1, 20, -6, 25, -13, 18, -19, 13, -23, 3, -21, -6, -12, -8, -8, -4)
+closed = true
+texture_mode = 2
+
+[node name="Heart" type="Polygon2D" parent="."]
+material = SubResource("ShaderMaterial_oyinf")
+color = Color(0.7137255, 0, 0, 1)
+polygon = PackedVector2Array(-4, 0, 0, -5, 7, -6, 14, -2, 13, 7, 8, 13, -1, 20, -6, 25, -13, 18, -19, 13, -23, 3, -21, -6, -12, -8, -8, -4)
 
 [node name="Glasses" type="Polygon2D" parent="."]
+visible = false
 texture = ExtResource("3_7nxwo")
 texture_offset = Vector2(10.745, 70.235)
 texture_scale = Vector2(11.111, 8.475)
@@ -34,6 +76,7 @@ polygon = PackedVector2Array(-6, -44, 68, -44, 68, -37, 65, -37, 65, -34, 62, -3
 uv = PackedVector2Array(-6, -44, 68, -44, 68, -37, 65, -37, 65, -34, 62, -34, 62, -30, 59, -30, 59, -26, 40, -26, 40, -30, 37, -30, 37, -34, 34, -34, 34, -41, 28, -41, 28, -33, 25, -33, 25, -29, 22, -29, 22, -26, 2, -26, 2, -30, 0, -30, 0, -34, -3, -34, -3, -37, -6, -37)
 
 [node name="Suit" type="Polygon2D" parent="."]
+visible = false
 texture = ExtResource("2_0syxu")
 texture_offset = Vector2(75.965, 92.79)
 polygon = PackedVector2Array(-46, -45, -45, -50, -43, -57, -41, -64, -38, -72, -33, -80, -25, -86, -16, -90, -7, -92, 9, -92, 21, -90, 31, -86, 41, -80, 47, -75, 51, -69, 52, -67, 53, -65, 57, -64, 63, -60, 68, -54, 72, -43, 72, -31, 70, -25, 66, -19, 63, -16, 64, 2, 64, 29, 62, 44, 55, 77, 52, 83, 48, 86, 45, 88, 38, 89, 31, 89, 22, 88, 17, 86, 13, 80, 11, 62, 10, 61, 6, 61, 5, 62, 5, 71, 5, 80, 3, 88, 1, 91, -4, 95, -14, 97, -30, 97, -39, 94, -42, 89, -45, 59, -58, 58, -65, 55, -70, 49, -74, 37, -75, 27, -76, 4, -73, -20, -69, -37, -62, -42)

@@ -1,0 +1,16 @@
+[gd_resource type="VisualShader" load_steps=2 format=3 uid="uid://dkcimpo01f68i"]
+
+[sub_resource type="VisualShaderNodeInput" id="VisualShaderNodeInput_sofpm"]
+input_name = "color"
+
+[resource]
+code = "shader_type canvas_item;
+render_mode blend_mix;
+
+
+
+"
+mode = 1
+flags/light_only = false
+nodes/vertex/2/node = SubResource("VisualShaderNodeInput_sofpm")
+nodes/vertex/2/position = Vector2(-80, 200)
