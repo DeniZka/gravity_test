@@ -109,7 +109,10 @@ func get_shape_transform() -> Transform2D:
 	return _col_polygon2d.global_transform
 	
 func append_strike(strike: StrikeInfo):
-	var half_area = PolygonLib.getPolygonArea(_polygon2d.polygon) / 2
+	var half_area = (PolygonLib.getPolygonArea(_polygon2d.polygon) - strike.area) / 2
+	if half_area < strike.area:
+		half_area = strike.area / 5
+		
 	var cut_fracture_info: Dictionary = polyFracture.cutFracture(_polygon2d.polygon, strike.poly, self.global_transform,  strike.transform, half_area, 0, 0, 0)
 	#leave maximal of shapes
 	var max_area: float = 0

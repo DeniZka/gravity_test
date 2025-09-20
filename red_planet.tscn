@@ -35,7 +35,9 @@ metadata/_custom_type_script = "uid://jv2vp43s31cy"
 radius = 1100.0
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_dsek3"]
-frequency = 0.0032
+noise_type = 2
+seed = 200
+frequency = 0.011
 domain_warp_enabled = true
 metadata/_preview_in_3d_space_ = true
 
@@ -44,11 +46,15 @@ width = 1024
 height = 1024
 noise = SubResource("FastNoiseLite_dsek3")
 seamless = true
+in_3d_space = true
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_sryvg"]
 shader = ExtResource("11_whogj")
 shader_parameter/noise = SubResource("NoiseTexture2D_whogj")
-shader_parameter/distortion = -18.23
+shader_parameter/power = 1.1599999777969998
+shader_parameter/radius = 0.43999999016512
+shader_parameter/crop_edge = 0.05999999865888
+shader_parameter/rotate_speed = 0.1
 
 [node name="RedPlanet" type="AnimatableBody2D"]
 input_pickable = true
@@ -94,7 +100,6 @@ keep_instances_in_tree = true
 [node name="Clouds" type="Sprite2D" parent="."]
 z_index = 1
 material = SubResource("ShaderMaterial_sryvg")
-position = Vector2(-14.500015, -27.500046)
-scale = Vector2(2.095, 2.095)
+position = Vector2(0, 0.99999994)
+scale = Vector2(2.82, 2.82)
 texture = SubResource("NoiseTexture2D_whogj")
-script = ExtResource("4_dsek3")
