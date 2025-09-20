@@ -1,4 +1,4 @@
-[gd_scene load_steps=20 format=3 uid="uid://ccehe80xetj6t"]
+[gd_scene load_steps=24 format=3 uid="uid://ccehe80xetj6t"]
 
 [ext_resource type="Script" uid="uid://dl1mvpq2oswla" path="res://gravity_area.gd" id="1_606m0"]
 [ext_resource type="Script" uid="uid://yaka46uyewui" path="res://red_planet.gd" id="1_waapx"]
@@ -34,6 +34,27 @@ metadata/_custom_type_script = "uid://jv2vp43s31cy"
 [sub_resource type="CircleShape2D" id="CircleShape2D_amldy"]
 radius = 1100.0
 
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_whogj"]
+noise_type = 2
+fractal_type = 2
+domain_warp_enabled = true
+metadata/_preview_in_3d_space_ = true
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_sryvg"]
+width = 1024
+height = 1024
+noise = SubResource("FastNoiseLite_whogj")
+seamless = true
+in_3d_space = true
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_sryvg"]
+shader = ExtResource("11_whogj")
+shader_parameter/noise = SubResource("NoiseTexture2D_sryvg")
+shader_parameter/power = 1.77999996393876
+shader_parameter/radius = 0.43999999016512
+shader_parameter/crop_edge = 0.05999999865888
+shader_parameter/rotate_speed = 0.1
+
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_dsek3"]
 noise_type = 2
 seed = 200
@@ -48,12 +69,14 @@ noise = SubResource("FastNoiseLite_dsek3")
 seamless = true
 in_3d_space = true
 
-[sub_resource type="ShaderMaterial" id="ShaderMaterial_sryvg"]
+[sub_resource type="CurveTexture" id="CurveTexture_cyt60"]
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_p6utv"]
 shader = ExtResource("11_whogj")
-shader_parameter/noise = SubResource("NoiseTexture2D_whogj")
-shader_parameter/power = 1.1599999777969998
-shader_parameter/radius = 0.43999999016512
-shader_parameter/crop_edge = 0.05999999865888
+shader_parameter/noise = SubResource("CurveTexture_cyt60")
+shader_parameter/power = 1.0
+shader_parameter/radius = 0.5
+shader_parameter/crop_edge = 0.12
 shader_parameter/rotate_speed = 0.1
 
 [node name="RedPlanet" type="AnimatableBody2D"]
@@ -103,3 +126,9 @@ material = SubResource("ShaderMaterial_sryvg")
 position = Vector2(0, 0.99999994)
 scale = Vector2(2.82, 2.82)
 texture = SubResource("NoiseTexture2D_whogj")
+
+[node name="Clouds2" type="Sprite2D" parent="."]
+z_index = 1
+material = SubResource("ShaderMaterial_p6utv")
+position = Vector2(0, 0.99999994)
+scale = Vector2(2.82, 2.82)

@@ -109,6 +109,7 @@ _data = {
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_17rhs"]
 shader = ExtResource("17_17rhs")
+shader_parameter/scale_x = 1.0
 shader_parameter/beams = 7
 shader_parameter/energy = 20.0
 shader_parameter/roughness = 3
@@ -128,6 +129,7 @@ shader_parameter/noise_scale = Vector2(1, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_8j1ou"]
 shader = ExtResource("17_17rhs")
+shader_parameter/scale_x = 1.0
 shader_parameter/beams = 3
 shader_parameter/energy = 3.0
 shader_parameter/roughness = 6
@@ -147,6 +149,7 @@ shader_parameter/noise_scale = Vector2(1, 1)
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_o3hm7"]
 shader = ExtResource("17_17rhs")
+shader_parameter/scale_x = 1.0
 shader_parameter/beams = 2
 shader_parameter/energy = 3.0
 shader_parameter/roughness = 3
@@ -437,13 +440,13 @@ popup/item_1/text = "0"
 popup/item_1/icon = ExtResource("16_17rhs")
 popup/item_1/id = 1
 
-[node name="ColorRect" type="ColorRect" parent="."]
+[node name="ColorRect" type="ColorRect" parent="HUD"]
 texture_repeat = 2
 material = SubResource("ShaderMaterial_17rhs")
-offset_left = -184.0
-offset_top = -168.0
-offset_right = -64.0
-offset_bottom = -56.0
+offset_left = 1027.0
+offset_top = -40.0
+offset_right = 1147.0
+offset_bottom = 72.0
 
 [node name="Polygon2D" type="Polygon2D" parent="."]
 material = SubResource("ShaderMaterial_8j1ou")

@@ -29,6 +29,8 @@ var behaivor = GRAVITY_BASED
 var sel_weapon: int = WEAPON_BLASTER
 var move_force: Vector2 = Vector2.ZERO
 var enable_beam: bool = false
+var beam_length: float = 300.0
+var beam_sqr_lenth: float = 0.0
 @onready var beam_ray: RayCast2D = $BeamRay
 
 var origin_parent: Node = null
@@ -36,6 +38,7 @@ var origin_parent: Node = null
 var lock_exit: bool = false #lock exit while reparent
 
 func _ready() -> void:
+	beam_sqr_lenth = pow(beam_length, 2.0)
 	super._ready()
 	$Magnet/CollisionShape2D.disabled = true
 	
@@ -178,15 +181,23 @@ func _on_area_sendor_area_exited(area: Area2D) -> void:
 func _process(delta: float) -> void:
 	if enable_beam:
 		$Beam.visible = true
-		beam_ray.target_position = get_local_mouse_position()
+		var local_mouse_v: Vector2 = get_local_mouse_position()
+		var qlen: float = local_mouse_v.length_squared()
+		if qlen <= beam_sqr_lenth:
+			beam_ray.target_position = get_local_mouse_position()
+		else:
+			beam_ray.target_position = local_mouse_v.normalized() * beam_length
 		if beam_ray.get_collider():
+			$Beam/GPUParticles2D.visible = true
 			$Beam.global_position = beam_ray.get_collision_point()
 			var v2 = beam_ray.get_collision_normal()
 			$Beam/GPUParticles2D.process_material.spread = 45
 			$Beam/GPUParticles2D.process_material.direction = Vector3(v2.x, v2.y, 0)
 			$Beam/GPUParticles2D.process_material.gravity = Vector3(-v2.x, -v2.y, 0) * 200.0
 		else:
-			$Beam.global_position = get_global_mouse_position()
+			$Beam/GPUParticles2D.visible = false
+			$Beam/GPUParticles2D.restart()
+			$Beam.position = beam_ray.target_position
 			$Beam/GPUParticles2D.process_material.spread = 180
 			$Beam/GPUParticles2D.process_material.direction = Vector3(0, 0, 0)
 			$Beam/GPUParticles2D.process_material.gravity = Vector3(0, 0, 0)
