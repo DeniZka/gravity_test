@@ -1,7 +1,7 @@
 extends Node2D
 
 @onready var player: Ship = $CharacterBody2D
-@onready var camera: Camera2D = $CharacterBody2D/Camera2D
+@onready var camera: Camera2D = $Camera2D
 
 @onready var rigidbody_template = preload("res://RigidBody2D.tscn")
 @onready var polyFracture := PolygonFracture.new()
@@ -11,12 +11,14 @@ extends Node2D
 @onready var _pool_rocket : PoolBasic  = $Pool_Rocket
 @onready var _pool_blast: PoolBasic = $Pool_Blaster
 @onready var planet := $RedPlanet
+@onready var camera_target: Node2D = null
 
 func _ready() -> void:
 	$AnimationPlayer.play("plank")
 	$AnimationPlayer2.play("planet")
 	player.spawn_projectile.connect(self.on_player_spawn_projectile)
 	player.weapon_selected.connect(self.on_player_weapon_selected)
+	camera_target = player
 	
 func on_player_weapon_selected(weapon: int):
 	$HUD/OptionButton.select(weapon)
@@ -33,6 +35,11 @@ func on_player_spawn_projectile(pos: Vector2, rot: float, vel: float, weapon: in
 			blast.spawn(pos, rot, vel)
 
 func _process(delta: float) -> void:
+	camera.global_position = camera_target.global_position
+	if camera_target.get_parent() is Planet:
+		camera.global_rotation = camera_target.global_rotation
+	else:
+		camera.global_rotation = 0
 	$CanvasLayer/Bg.rotation = -camera.get_screen_rotation()
 	$HUD/Speed.text = str("SPD: %0.2f" % player.velocity.length()) 
 

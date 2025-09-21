@@ -386,7 +386,8 @@ mode = "Item"
 [node name="CharacterBody2D" parent="." instance=ExtResource("5_xlvrw")]
 position = Vector2(487, -474)
 
-[node name="Camera2D" type="Camera2D" parent="CharacterBody2D"]
+[node name="Camera2D" type="Camera2D" parent="."]
+position = Vector2(487, -474)
 ignore_rotation = false
 rotation_smoothing_enabled = true
 rotation_smoothing_speed = 2.0

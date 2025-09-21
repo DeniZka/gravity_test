@@ -19,7 +19,7 @@ signal start_hitscan()
 var forward_force: Vector2 = Vector2.ZERO
 var backward_force: Vector2 = Vector2.ZERO
 var up_force: Vector2 = Vector2.ZERO
-var acceleration_force: Vector2 = Vector2.ZERO
+var acceleration_force: float = 1.0
 var back_force: Vector2 = Vector2.ZERO
 var rot_force: float = 0
 var rot_vel: float = 0
@@ -57,14 +57,17 @@ func _physics_process(delta: float) -> void:
 		#do angle correction to gravity direction
 	var gravity_force = Vector2.ZERO
 	var dang: float = 0.0
-	if behaivor == GRAVITY_BASED:
-		dang = angle_to_angle(global_rotation, up_direction.angle() + PI/2.0)
+	if owner_area:
+		if behaivor == GRAVITY_BASED:
+			dang = angle_to_angle(global_rotation, up_direction.angle() + PI/2.0)
+		else:
+			dang = angle_to_angle(global_rotation, gravity_vector_rotation)
 	else:
-		dang = angle_to_angle(global_rotation, gravity_vector_rotation)
+		dang = angle_to_angle(global_rotation, (get_global_mouse_position() - global_position).angle() + PI/2.0)
 	#print(dang, " ", global_rotation, " ", gravity_vector_rotation, " ", global_rotation + dang)
-	if owner_area: #landing mode pritority
-		if abs(dang) > 0.01: #11.4 deg lesser just use physics
+	if abs(dang) > 0.01: #11.4 deg lesser just use physics
 			rotate(dang * delta)
+	if owner_area: #landing mode pritority
 		var ga_keys: Array = gravity_areas.keys()
 		if len(ga_keys) > 0:
 			if not is_on_wall():
@@ -93,7 +96,7 @@ func _physics_process(delta: float) -> void:
 	
 	
 	#print(get_parent().name, " ud:", up_direction)
-	var force: Vector2 = (move_force + acceleration_force)
+	var force: Vector2 = move_force * acceleration_force
 	#print(force)
 	var body_dump: float = 2.0
 	if is_on_wall():
@@ -103,7 +106,10 @@ func _physics_process(delta: float) -> void:
 	var pps = ProjectSettings.get_setting("physics/common/physics_ticks_per_second")
 	#print("force", gravity_force)
 	if behaivor == GRAVITY_BASED:
-		velocity += (force.rotated(up_direction.angle() + PI/2) + gravity_force) * delta 
+		if owner_area:
+			velocity += (force.rotated(up_direction.angle() + PI/2) + gravity_force) * delta 
+		else:
+			velocity += (force + gravity_force) * delta
 	else:
 		velocity += (force.rotated(global_rotation) + gravity_force) * delta
 	#dump
@@ -246,9 +252,9 @@ func _input(event: InputEvent) -> void:
 			spawn_projectile.emit(global_position + dir * 30, dir.angle(), velocity.length(), sel_weapon)
 
 	if event.is_action_pressed("force"):
-		acceleration_force = Vector2.UP * 1200
+		acceleration_force = 3
 	if event.is_action_released("force"):
-		acceleration_force = Vector2.ZERO
+		acceleration_force = 1.0
 
 
 func _on_tree_entered() -> void:

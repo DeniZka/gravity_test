@@ -24,7 +24,7 @@ gravity_str = 900.0
 metadata/_custom_type_script = "uid://jv2vp43s31cy"
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_73fnb"]
-radius = 1524.0
+radius = 1261.0016
 
 [sub_resource type="Resource" id="Resource_pioia"]
 script = ExtResource("3_pioia")
